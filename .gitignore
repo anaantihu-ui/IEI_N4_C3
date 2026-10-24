@@ -148,7 +148,10 @@ activemq-data/
 *.sage.py
 
 # Environments
-.env
+# .env publico contiene solo marcadores academicos
+.env.*
+!.env.example
+crear_base_datos_local.sql
 .envrc
 .venv
 env/
