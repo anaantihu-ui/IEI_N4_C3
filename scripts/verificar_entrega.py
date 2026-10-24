@@ -7,7 +7,9 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
 required = ['manage.py', 'crear_base_datos.sql', '.env', '.env.example', '.gitignore',
-            'drf/settings.py', 'drf/urls.py', 'requirements.txt', 'README.md']
+            'drf/settings.py', 'drf/urls.py', 'requirements.txt', 'README.md',
+            'biblio_app/models.py', 'biblio_app/serializers.py', 'biblio_app/views.py',
+            'biblio_app/urls.py', 'biblio_app/migrations/0001_initial.py']
 errors = []
 for name in required:
     if not (ROOT / name).is_file():

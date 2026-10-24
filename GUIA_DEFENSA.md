@@ -1,23 +1,22 @@
-# Guía para explicar los cambios ante el profesor
+# Defensa individual — BiblioHub
 
-## Qué se hizo realmente
+Base docente: https://github.com/baileytorch/IEI_N4_C1 (commit e030c19).
+Lee los archivos indicados y practica un CRUD completo antes de la evaluación.
 
-Se mejoró la **configuración de un proyecto Django de clases**. Se agregó un script de creación de base MySQL/MariaDB con usuario y permisos, un `.env` público de ejemplo, un `.env.local` privado opcional, la configuración de MySQL en `settings.py`, dependencias y documentación. Se conservaron las páginas existentes y la ruta administrativa.
+## 1. ¿Cómo representas el modelo y sus relaciones?
+`biblio_app/models.py` define 18 entidades. Una Provincia pertenece a una Region mediante ForeignKey. Libro se relaciona con Autor, SubGenero, Edicion y Biblioteca. Inventario representa un ejemplar; Prestamo enlaza ese ejemplar con un Usuario lector. Se mantienen las relaciones CASCADE del profesor: eliminar un padre puede eliminar sus dependientes.
 
-## Respuestas breves
+## 2. ¿Qué diferencia hay entre el SQL y las migraciones?
+`crear_base_datos.sql` crea la base, el usuario y sus permisos. `makemigrations` genera instrucciones de cambio de esquema y `migrate` las aplica. La migración inicial de biblio_app crea sus 18 tablas. Copiar código o ejecutar runserver no crea las tablas. En phpMyAdmin la base del proyecto es incidencias, no mysql.
 
-**¿Para qué sirve `crear_base_datos.sql`?** Crea la base `incidencias`, el usuario `bibliohub_app` y le otorga permisos sobre ella. Django crea las tablas con `migrate`.
+## 3. ¿Para qué sirve un serializer?
+Convierte modelos en datos que se pueden responder como JSON y valida los datos recibidos antes de persistirlos. Cada ModelSerializer declara su modelo y campos. Las relaciones reciben IDs. UsuarioSerializer guarda contrasenia con hash y la marca write_only: no sale en respuestas. Los lectores y las cuentas de autenticación Django son entidades diferentes.
 
-**¿Para qué sirve `.env`?** Para separar parámetros de configuración del código. Por requisito académico se publica **solo con valores ficticios**. Los datos reales se dejan en `.env.local` o en variables del sistema.
+## 4. ¿Cómo se conecta una petición con el CRUD?
+`drf/urls.py` incluye `/api/`. DefaultRouter registra cada ModelViewSet. GET lista o consulta; POST crea; PUT actualiza todos los campos requeridos; PATCH cambia algunos; DELETE elimina. El queryset identifica los registros y serializer_class el serializer. Demuestra 201 al crear, 200 al consultar/editar, 204 al borrar y 404 al volver a consultar el ID borrado. Los endpoints requieren autenticación Django.
 
-**¿Por qué modificar `.gitignore`?** Git ignoraba `.env`; ahora permite subir la plantilla académica, pero excluye `.env.local`, los entornos virtuales, cachés y bases SQLite locales.
+## 5. ¿Cómo separas la configuración y demuestras persistencia?
+settings.py usa python-decouple y elige .env.local cuando existe; de lo contrario lee .env. Las variables del sistema prevalecen. Los archivos públicos tienen marcadores; las credenciales operativas se guardan localmente. Para demostrar persistencia MySQL, ejecuta SQL y migrate, crea un registro por POST, consúltalo por GET y comprueba la tabla en phpMyAdmin. Las pruebas realizadas con SQLite no certifican esa conexión MySQL.
 
-**¿Qué hace `settings.py`?** Registra apps, middleware, plantillas, claves y motor de base de datos; aquí lee los valores mediante `python-decouple`.
-
-**¿Qué hacen `makemigrations` y `migrate`?** El primero genera cambios de esquemas desde modelos; el segundo aplica migraciones a la BD.
-
-**¿Qué diferencia hay entre SQLite y MySQL?** SQLite guarda datos en un archivo; MySQL es un servidor de base de datos con autenticación y permisos.
-
-**¿Qué modelos y API se entregan?** En el ZIP suministrado los `models.py` están vacíos y no hay API REST. No debes afirmar que tiene 18 modelos bibliotecarios o endpoints ModelViewSet sin aportar otra versión del código.
-
-**¿Qué falta comprobar?** Ejecutar la instalación con MySQL local compatible, efectuar migraciones y confirmar la ejecución en el computador de entrega.
+## Límites que debes conocer
+La API implementa CRUD del modelo del profesor. No automatiza multas, reservas, control de disponibilidad ni roles de bibliotecario/lector. El acceso académico permite operar a cualquier cuenta Django autenticada. No afirmes capacidades adicionales. Consulta VERIFICACION_Y_CAMBIOS.md para separar lo probado de lo pendiente.

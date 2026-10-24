@@ -1,42 +1,23 @@
-# Verificación y cambios de la entrega
+# Verificación de Evaluación 2
 
-## Base examinada
+## Implementación
+- Modelo de 18 entidades adaptado del ejemplo docente baileytorch/IEI_N4_C1, commit e030c19cc67fb7a97a0c0b24371235f3868dc277.
+- Nueva app biblio_app con migración inicial, 18 ModelSerializer, 18 ModelViewSet y DefaultRouter bajo /api/.
+- Django REST Framework declarado en requirements.txt y settings.py.
+- Autenticación por cuenta Django; contraseña del lector con hash y write_only.
+- Se mantienen las páginas y apps previas, base incidencias, SQL y configuración por entorno.
+- README y guía de defensa actualizados para describir la implementación real.
 
-Se utilizó el contenido de `IEI_N4_C3-main (2).zip` proporcionado en esta conversación. En la copia analizada:
+## Validación
+- 24 pruebas automatizadas: 18 ciclos CRUD completos con comprobación de persistencia, 4 pruebas de acceso/validación/contraseñas y 2 pruebas de páginas.
+- Migración inicial generada desde los modelos de esta app nueva.
+- Las comprobaciones de ejecución usan Django y DRF reales sobre SQLite, sin adaptadores simulados.
+- SQLite emite 18 avisos W046 por comentarios de tablas del modelo docente; no soporta esos comentarios.
 
-- `drf/settings.py` usaba SQLite y contenía la clave `SECRET_KEY` escrita en el código.
-- `.gitignore` ignoraba `.env`.
-- `drf/urls.py` redefinía `urlpatterns` dos veces.
-- `incidencias/models.py` y `mi_app/models.py` no definían modelos.
-- `requirements.txt` estaba en UTF-16 y no contenía `python-decouple` ni `mysqlclient`.
-- La carpeta ZIP incluía `.git/`, dos entornos virtuales y `db.sqlite3` local.
-- No se encontraron serializers, API REST ni modelos del sistema bibliotecario descrito previamente.
+## Pendientes que dependen del equipo de entrega
+- Instalar mysqlclient y sus requisitos de compilación si son necesarios.
+- Ejecutar el SQL con credenciales locales, comprobar versión MySQL/MariaDB y aplicar migraciones reales.
+- Repetir el CRUD con DB_ENGINE=mysql y conservar evidencia de persistencia.
+- Practicar las cinco preguntas de la defensa individual.
 
-## Cambios incorporados
-
-1. `crear_base_datos.sql` con `CREATE DATABASE`, `CREATE USER`, `GRANT` y `SHOW GRANTS`.
-2. `.env` con marcadores para publicación académica y `.env.example`.
-3. Configuración privada alternativa `.env.local`, ignorada por Git y **no incluida**.
-4. `.gitignore` modificado para permitir `.env`, excluir archivos privados, bases locales y entornos.
-5. `drf/settings.py` configurado para MySQL por defecto, con SQLite opcional solo para pruebas; se quitó la clave literal del código.
-6. `drf/urls.py` simplificado, conservando las rutas existentes y el manejador de 404.
-7. `requirements.txt` pasado a UTF-8 y actualizado con las dependencias de configuración/MySQL.
-8. `README.md` actualizado con instrucciones reales de instalación, seguridad y alcance.
-9. `mi_app/tests.py` con pruebas para las vistas existentes.
-10. `scripts/verificar_entrega.py` y `GUIA_DEFENSA.md`.
-
-## Pruebas realizadas
-
-- **OK:** compilación sintáctica de los archivos Python.
-- **OK:** verificación estática de archivos exigidos y cláusulas SQL presentes.
-- **OK:** `python manage.py check` con `DB_ENGINE=sqlite`, usando la copia de Django contenida en el ZIP original y un adaptador temporal de pruebas en lugar de `python-decouple` (no disponible para instalar en el entorno de validación). El adaptador **no está incluido** en la entrega.
-- **OK:** 2 pruebas de `mi_app` (inicio 200 y ruta inexistente 404) en esas mismas condiciones de prueba.
-- **PENDIENTE:** instalar y verificar las dependencias reales desde `requirements.txt` en el equipo de entrega.
-- **PENDIENTE:** ejecutar el SQL contra un MySQL/MariaDB compatible, realizar `migrate` y comprobar la conexión real de Django.
-- **PENDIENTE:** subir al repositorio GitHub de la usuaria y confirmar su contenido público.
-
-**La verificación no demuestra que exista un sistema bibliotecario completo; el código recibido no lo contiene.**
-
-## Notas de seguridad
-
-El `.env` requerido por la evaluación es público y contiene únicamente texto de ejemplo. Para una ejecución real, crea `.env.local` y `crear_base_datos_local.sql`, que se excluyen de Git. No entregues contraseñas reales a un repositorio público. Si la `SECRET_KEY` que antes figuraba en GitHub se usó para una aplicación real, debe considerarse expuesta y reemplazarse.
+No se ha certificado una conexión MySQL desde este entorno. El verificador estático no sustituye esa prueba. La implementación es CRUD académico; no incluye reglas de stock, multas o reservas.

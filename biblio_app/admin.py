@@ -1,0 +1,21 @@
+from django.contrib import admin
+from . import models
+
+admin.site.register(models.Pais)
+admin.site.register(models.Region)
+admin.site.register(models.Provincia)
+admin.site.register(models.Comuna)
+admin.site.register(models.Direccion)
+admin.site.register(models.Biblioteca)
+admin.site.register(models.Autor)
+admin.site.register(models.Genero)
+admin.site.register(models.SubGenero)
+admin.site.register(models.Editorial)
+admin.site.register(models.Idioma)
+admin.site.register(models.Edicion)
+admin.site.register(models.Libro)
+admin.site.register(models.Estado)
+admin.site.register(models.Ubicacion)
+admin.site.register(models.Inventario)
+admin.site.register(models.Usuario)
+admin.site.register(models.Prestamo)

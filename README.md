@@ -1,110 +1,141 @@
-# IEI_N4_C3 — Proyecto Django de clases
+# BiblioHub — Evaluación 2 de Programación Backend
 
-Proyecto Django educativo con una página de bienvenida, una página personalizada para el error 404 y aplicaciones llamadas `mi_app` e `incidencias`.
+API REST educativa con Django y Django REST Framework. Implementa 18 entidades, migraciones, serializers, ModelViewSet y DefaultRouter con GET, POST, PUT, PATCH y DELETE.
 
-> **Estado comprobado en el ZIP recibido:** los archivos `models.py` de ambas aplicaciones no definen modelos de negocio; no se encontraron serializers ni endpoints REST bibliotecarios. Por tanto, **esta versión no es un BiblioHub de gestión bibliotecaria completo**. Esta entrega mejora la **configuración y documentación**, sin atribuirle funciones inexistentes.
+## Procedencia y alcance
 
-## Contenido
+El modelo se adapta del ejemplo del docente Erick Bailey Rebolledo:
+https://github.com/baileytorch/IEI_N4_C1/tree/e030c19cc67fb7a97a0c0b24371235f3868dc277
 
-- `manage.py`: comandos de administración de Django.
-- `drf/settings.py`: configuración de seguridad, apps y bases de datos por variables de entorno.
-- `drf/urls.py`: rutas `/` (bienvenida) y `/admin/`; manejador 404 personalizado.
-- `mi_app/`: vistas y plantillas de bienvenida y error 404.
-- `incidencias/`: aplicación Django registrada, actualmente sin modelos de negocio.
-- `crear_base_datos.sql`: creación de BD MySQL, usuario dedicado y permisos.
-- `.env`: **solo marcadores públicos**, por petición académica.
-- `.env.example`: plantilla de configuración.
-- `.gitignore`: protege `.env.local`, entornos, cachés y SQLite local.
-- `requirements.txt`: dependencias de Django, python-decouple y mysqlclient.
-- `scripts/verificar_entrega.py`: revisión de archivos y reglas de entrega.
-- `GUIA_DEFENSA.md`: explicación de los conceptos principales para exposición oral.
+Se conservan sus entidades, campos y relaciones. La app `biblio_app` es nueva en este repositorio: por eso tiene una migración inicial propia. Se conservan las apps y páginas originales (`mi_app`, `incidencias`) y el proyecto de configuración `drf`.
 
-## Requisitos
+Esta entrega implementa el CRUD del modelo. No añade gestión automática de stock, multas, reservas ni disponibilidad de ejemplares. Los borrados mantienen el comportamiento CASCADE del ejemplo docente: borrar un registro padre puede borrar registros dependientes. Utiliza datos de prueba al demostrar DELETE.
 
-- Python 3.11 o una versión compatible con los paquetes indicados.
-- MySQL compatible con Django 5.2, o MariaDB **10.5 o superior**; verificar la compatibilidad de la versión exacta usada.
-- Windows: XAMPP solo si su versión de MariaDB es compatible; en algunas instalaciones antiguas incluye MariaDB 10.4, que **no es compatible** con esta versión de Django.
+## Modelo y endpoints
 
-## Instalación en Windows / PowerShell
+Todos los endpoints requieren iniciar sesión. La raíz es `/api/`.
 
-Desde la carpeta del proyecto, donde está `manage.py`:
+| Modelo | Endpoint | Relaciones directas |
+|---|---|---|
+| Pais | paises | — |
+| Region | regiones | — |
+| Provincia | provincias | Region |
+| Comuna | comunas | Provincia |
+| Direccion | direcciones | Comuna |
+| Biblioteca | bibliotecas | Direccion |
+| Autor | autores | Pais (nacionalidad) |
+| Genero | generos | — |
+| SubGenero | subgeneros | Genero |
+| Editorial | editoriales | Direccion |
+| Idioma | idiomas | — |
+| Edicion | ediciones | Editorial, Idioma |
+| Libro | libros | Autor, SubGenero, Edicion, Biblioteca |
+| Estado | estados | — |
+| Ubicacion | ubicaciones | — |
+| Inventario | inventarios | Libro, Estado, Ubicacion |
+| Usuario | usuarios | Pais, Direccion, Biblioteca |
+| Prestamo | prestamos | Inventario (campo libro), Usuario (campo lector) |
+
+Las relaciones se envían como IDs existentes. `id`, `created_at`, `updated_at` y `fecha_prestamo` son gestionados por Django. `Usuario` representa un lector, no una cuenta de acceso a la API. Para autenticarse se usan las cuentas de Django creadas con `createsuperuser` o desde el administrador. `contrasenia` del lector se guarda con hash y nunca se devuelve por la API.
+
+## Instalación (Windows / PowerShell)
+
+Requisitos: Python 3.11 o 3.12, Git y MySQL 8 o MariaDB 10.5 o superior compatible con Django 5.2. Un XAMPP con MariaDB 10.4 requiere actualizar el servidor.
 
 ```powershell
+git clone https://github.com/anaantihu-ui/IEI_N4_C3.git
+cd IEI_N4_C3
 py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
+Copy-Item .env.example .env.local
 ```
 
-Si tu instalación no puede compilar `mysqlclient`, instala el conector siguiendo las instrucciones de la versión compatible para Windows/Python antes de continuar.
+Si ya tienes el proyecto, actualiza con `git pull` antes de instalar. Si `mysqlclient` no tiene una rueda compatible con tu Python, requiere herramientas de compilación y las bibliotecas cliente MySQL/MariaDB. En Linux se necesitan también `pkg-config` y cabeceras de desarrollo. No reemplaces MySQL por SQLite como evidencia de conexión MySQL.
 
-### Configuración local (credenciales fuera de GitHub)
-
-**El `.env` versionado NO contiene credenciales operativas:** está preparado solo para la revisión pública del profesor.
-
-1. Copia `.env` como `.env.local` en el mismo directorio que `manage.py`.
-2. Edita **solo** `.env.local`: sustituye `DJANGO_SECRET_KEY` por una clave generada de forma segura y cambia `DB_PASSWORD` por una contraseña privada.
-3. Mantén `.env.local` fuera de GitHub (`.gitignore` ya lo excluye).
-4. Si trabajas con MySQL, asegúrate de que el usuario, host, contraseña y BD coincidan con `crear_base_datos.sql`.
-5. Las variables de entorno del sistema pueden sobrescribir valores de ese archivo.
-
-Por ejemplo, para crear una clave secreta en PowerShell (con Python y Django instalados):
+Edita `.env.local`: genera una clave privada para `DJANGO_SECRET_KEY` y configura `DB_PASSWORD`. Para generar la clave:
 
 ```powershell
 python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-### Preparar la base MySQL
+`.env` y `.env.example` son plantillas públicas con marcadores; no contienen credenciales operativas. `.env.local` está excluido de Git. Las variables del sistema tienen prioridad sobre el archivo. Mantén `DB_ENGINE=mysql` para la entrega MySQL.
 
-1. Inicia el servidor MySQL o MariaDB compatible.
-2. Haz una copia de `crear_base_datos.sql` llamada `crear_base_datos_local.sql` y cambia **solo en esa copia local** `REEMPLAZAR_CON_PASSWORD_LOCAL` por una contraseña privada. Ese archivo está excluido en `.gitignore`.
-3. Ejecuta `crear_base_datos_local.sql` con una cuenta administradora desde phpMyAdmin (pestaña SQL/Importar) o el cliente `mysql`.
-4. Copia la misma contraseña en el `DB_PASSWORD` de `.env.local`.
-5. Ejecuta:
+## Crear base, usuario y permisos
+
+1. Copia `crear_base_datos.sql` como `crear_base_datos_local.sql`.
+2. Cambia el marcador de contraseña solo en esa copia privada.
+3. Ejecuta el SQL con una cuenta administradora en phpMyAdmin o en el cliente MySQL.
+4. Comprueba que exista la base **incidencias**, el usuario **bibliohub_app** y sus permisos. No uses la base interna `mysql` como base del proyecto.
+5. Configura los mismos datos en `.env.local`, incluido `DB_HOST=127.0.0.1`.
+
+El nombre de la base `incidencias` se conserva por compatibilidad con la configuración anterior. Puede almacenar las tablas de BiblioHub. `CREATE USER IF NOT EXISTS` no cambia la contraseña de un usuario ya existente: si ya existía, comprueba sus credenciales con el administrador.
 
 ```powershell
 python manage.py check
 python manage.py migrate
-python manage.py test
+python manage.py createsuperuser
 python manage.py runserver
 ```
 
-Abre <http://127.0.0.1:8000/>. El usuario de la base se creó con el host `127.0.0.1`, por lo que la configuración debe usar el mismo host.
+Abre http://127.0.0.1:8000/api/ y utiliza el enlace de inicio de sesión de la API (http://127.0.0.1:8000/api-auth/login/). El administrador está en `/admin/`. Sin autenticación los recursos responden 401. Todos los usuarios autenticados pueden gestionar el catálogo: esta es una política académica, no roles de producción. Basic Authentication se ofrece para pruebas locales; cualquier despliegue remoto debe utilizar HTTPS y configuración de producción.
 
-**Importante:** `migrate` crea o actualiza la *estructura* de tablas; no importa datos previamente guardados en `db.sqlite3`. Si necesitas trasladar datos, hace falta un procedimiento adicional.
+## Demostrar el CRUD
 
-### Pruebas sin MySQL (SQLite solo para validación local)
+Ejemplo con `/api/paises/`, después de iniciar sesión:
 
-Cambia `DB_ENGINE=sqlite` **solo en `.env.local`** y ejecuta:
+| Método | URL | Efecto y respuesta |
+|---|---|---|
+| GET | /api/paises/ | Lista, 200 |
+| POST | /api/paises/ | Crea, 201 |
+| GET | /api/paises/ID/ | Consulta un registro, 200 |
+| PUT | /api/paises/ID/ | Actualización completa, 200 |
+| PATCH | /api/paises/ID/ | Actualización parcial, 200 |
+| DELETE | /api/paises/ID/ | Eliminación, 204 |
+
+POST o PUT (reemplaza ID por el identificador devuelto):
+
+```json
+{"nombre":"Chile","nacionalidad":"Chilena","iso_2":"CL","iso_3":"CHL","habilitado":true}
+```
+
+PATCH:
+
+```json
+{"nombre":"Chile actualizado"}
+```
+
+En Postman selecciona Basic Auth e ingresa tu cuenta Django. Usa Body → raw → JSON para POST, PUT y PATCH. La API devuelve 400 ante datos inválidos y 404 para IDs inexistentes. Primero crea los catálogos y luego las entidades dependientes, siguiendo la tabla del modelo. Las páginas de libros deben ser positivas y las fechas de devolución/retorno no pueden ser anteriores al préstamo.
+
+## Verificación
 
 ```powershell
-python manage.py check
-python manage.py migrate
+python scripts/verificar_entrega.py
+python manage.py makemigrations --check --dry-run
+python manage.py showmigrations biblio_app
+```
+
+El verificador requiere Git y revisa archivos y exclusiones, no conexión ni credenciales de MySQL. En una entrega no debe incluirse `.env.local`.
+
+Para pruebas aisladas con SQLite (PowerShell):
+
+```powershell
+$env:DB_ENGINE="sqlite"
 python manage.py test
+Remove-Item Env:DB_ENGINE
 ```
 
-Es una alternativa temporal para comprobar las páginas y migraciones, **no** una prueba de conectividad con MySQL.
+Las 24 pruebas incluyen CRUD con persistencia para los 18 endpoints, acceso anónimo, autenticación, hash de contraseñas, datos inválidos y las dos páginas originales. SQLite advierte que no soporta comentarios de tablas; esto no impide ejecutar las pruebas. Las pruebas MySQL necesitan una cuenta de pruebas con permisos para crear y borrar una base de pruebas; no amplíes por ello los permisos del usuario de ejecución normal.
 
-## Requisitos de entrega del profesor
+**Validado en el entorno de desarrollo:** CRUD y migraciones con SQLite. **Pendiente en el equipo de entrega:** instalación completa de mysqlclient, ejecución SQL y migraciones/conexión real MySQL. Guarda evidencia de `migrate`, `showmigrations`, tablas en phpMyAdmin y peticiones CRUD sobre MySQL antes de afirmar que la persistencia MySQL está verificada.
 
-- [x] URL de un repositorio público (inclúyela en la plataforma de entrega).
-- [x] Script SQL con creación de BD, usuario y permisos.
-- [x] Archivo `.env` publicable con **marcadores**, sin credenciales reales.
-- [x] `.gitignore` permite versionar `.env` y excluye `.env.local`.
-- [ ] Verificar MySQL funcionando en el equipo de entrega.
-- [ ] Comprobar subida de los archivos a GitHub y que el repositorio sea público.
+## Archivos y defensa
 
-**Repositorio a utilizar:** <https://github.com/anaantihu-ui/IEI_N4_C3>
+- `biblio_app/models.py`, `migrations/`: modelo y esquema.
+- `biblio_app/serializers.py`: JSON, validaciones y protección de contraseñas.
+- `biblio_app/views.py`, `urls.py`: ModelViewSet y Router.
+- `crear_base_datos.sql`, `.env`, `.env.example`: configuración de entrega.
+- `GUIA_DEFENSA.md`: cinco preguntas explicadas.
+- `VERIFICACION_Y_CAMBIOS.md`: alcance de las comprobaciones.
 
-## Cómo subir los cambios
-
-Desde una copia del proyecto bajo Git (o clonando tu repositorio):
-
-```powershell
-git status
-git add .
-git status
-git commit -m "Agregar SQL, configuracion segura y documentacion"
-git push origin main
-```
-
-Revisa siempre `git status` antes de `git add .` para evitar incluir secretos. El ZIP entregado está limpio: no contiene `.git`, bases locales ni entornos virtuales.
+Repositorio de entrega: https://github.com/anaantihu-ui/IEI_N4_C3
