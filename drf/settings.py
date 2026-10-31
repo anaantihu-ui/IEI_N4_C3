@@ -21,6 +21,10 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [host.strip() for host in config(
     'DJANGO_ALLOWED_HOSTS', default='127.0.0.1,localhost'
 ).split(',') if host.strip()]
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in config(
+    'DJANGO_CSRF_TRUSTED_ORIGINS', default=''
+).split(',') if origin.strip()]
+LOGIN_REDIRECT_URL = '/api/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -72,10 +76,11 @@ if DB_ENGINE == 'mysql':
             'ENGINE': 'django.db.backends.mysql',
             'NAME': config('DB_NAME', default='incidencias'),
             'USER': config('DB_USER', default='bibliohub_app'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
+            'PASSWORD': config('DB_PASSWORD'),
             'HOST': config('DB_HOST', default='127.0.0.1'),
             'PORT': config('DB_PORT', default=3306, cast=int),
             'OPTIONS': {'charset': 'utf8mb4'},
+            'TEST': {'NAME': config('DB_TEST_NAME', default='test_incidencias')},
         }
     }
 elif DB_ENGINE == 'sqlite':
