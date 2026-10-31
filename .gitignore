@@ -148,7 +148,8 @@ activemq-data/
 *.sage.py
 
 # Environments
-# .env publico contiene solo marcadores academicos
+# .env publico requerido por la consigna: solo valores de demostracion
+# Las claves privadas se guardan en .env.local, nunca en el .env publicado
 .env.*
 !.env.example
 crear_base_datos_local.sql

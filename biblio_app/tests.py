@@ -107,6 +107,14 @@ class ApiTests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Basic ' + token)
         self.assertEqual(self.client.get('/api/paises/').status_code, 200)
 
+    def test_browser_login_redirects_to_api(self):
+        self.client.force_authenticate(None)
+        response = self.client.post('/api-auth/login/', {
+            'username': 'prueba', 'password': 'ClaveSoloPruebas123!',
+        })
+        self.assertRedirects(response, '/api/')
+        self.assertEqual(self.client.get('/api/paises/').status_code, 200)
+
 
 def crud_test(route):
     def test(self):

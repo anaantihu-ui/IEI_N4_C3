@@ -10,6 +10,7 @@ required = ['manage.py', 'crear_base_datos.sql', '.env', '.env.example', '.gitig
             'drf/settings.py', 'drf/urls.py', 'requirements.txt', 'README.md',
             'biblio_app/models.py', 'biblio_app/serializers.py', 'biblio_app/views.py',
             'biblio_app/urls.py', 'biblio_app/migrations/0001_initial.py']
+required += ['scripts/permisos_pruebas.sql', 'docs/VERIFICACION.md']
 errors = []
 for name in required:
     if not (ROOT / name).is_file():
@@ -46,6 +47,17 @@ for key in ['DJANGO_SECRET_KEY=', 'DB_NAME=', 'DB_USER=', 'DB_PASSWORD=']:
     if key not in public_env:
         errors.append(f'Falta {key} en .env')
 
+# La configuracion publica de demostracion debe coincidir con el SQL entregado.
+example_file = ROOT / '.env.example'
+if example_file.is_file() and example_file.read_text(encoding='utf-8') != public_env:
+    errors.append('.env y .env.example no coinciden')
+env_values = dict(line.split('=', 1) for line in public_env.splitlines()
+                  if '=' in line and not line.lstrip().startswith('#'))
+for key in ['DB_NAME', 'DB_USER', 'DB_PASSWORD']:
+    value = env_values.get(key, '')
+    if not value or value not in sql:
+        errors.append(f'{key} no coincide con crear_base_datos.sql')
+
 if (ROOT / '.env.local').exists():
     errors.append('Un .env.local privado está presente en el paquete: no publicarlo')
 
@@ -54,4 +66,4 @@ if errors:
     for error in errors:
         print(' -', error)
     sys.exit(1)
-print('OK: requisitos de archivos y SQL detectados. No verifica conexion real a MySQL.')
+print('OK: archivos, exclusiones y configuracion publica/SQL coherentes. No verifica conexion real a MySQL.')
