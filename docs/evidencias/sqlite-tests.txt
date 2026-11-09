@@ -1,0 +1,75 @@
+Creating test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+Found 40 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: messages, rest_framework, staticfiles
+  Apply all migrations: admin, auth, comunidad, contenttypes, sessions
+Synchronizing apps without migrations:
+  Creating tables...
+    Running deferred SQL...
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying comunidad.0001_initial... OK
+  Applying sessions.0001_initial...test_attendance_permission_and_hours (comunidad.tests.PlatformTests.test_attendance_permission_and_hours) ... ok
+test_audit_is_read_only_and_scoped (comunidad.tests.PlatformTests.test_audit_is_read_only_and_scoped) ... ok
+test_browser_login (comunidad.tests.PlatformTests.test_browser_login) ... ok
+test_cancel_records_history_and_releases_related_data (comunidad.tests.PlatformTests.test_cancel_records_history_and_releases_related_data) ... ok
+test_capacity_cancel_and_reactivate (comunidad.tests.PlatformTests.test_capacity_cancel_and_reactivate) ... ok
+test_coordinator_cannot_read_private_profile_history (comunidad.tests.PlatformTests.test_coordinator_cannot_read_private_profile_history) ... ok
+test_coordinator_cannot_write_other_organization (comunidad.tests.PlatformTests.test_coordinator_cannot_write_other_organization) ... ok
+test_crud_actividades (comunidad.tests.PlatformTests.test_crud_actividades) ... ok
+test_crud_asignaciones (comunidad.tests.PlatformTests.test_crud_asignaciones) ... ok
+test_crud_asistencias (comunidad.tests.PlatformTests.test_crud_asistencias) ... ok
+test_crud_categorias (comunidad.tests.PlatformTests.test_crud_categorias) ... ok
+test_crud_incidencias (comunidad.tests.PlatformTests.test_crud_incidencias) ... ok
+test_crud_inscripciones (comunidad.tests.PlatformTests.test_crud_inscripciones) ... ok
+test_crud_organizaciones (comunidad.tests.PlatformTests.test_crud_organizaciones) ... ok
+test_crud_perfiles (comunidad.tests.PlatformTests.test_crud_perfiles) ... ok
+test_crud_recursos (comunidad.tests.PlatformTests.test_crud_recursos) ... ok
+test_crud_ubicaciones (comunidad.tests.PlatformTests.test_crud_ubicaciones) ... ok
+test_date_and_capacity_validation (comunidad.tests.PlatformTests.test_date_and_capacity_validation) ... ok
+test_failed_create_leaves_no_audit (comunidad.tests.PlatformTests.test_failed_create_leaves_no_audit) ... ok
+test_inactive_organization_blocks_registration (comunidad.tests.PlatformTests.test_inactive_organization_blocks_registration) ... ok
+test_incident_workflow (comunidad.tests.PlatformTests.test_incident_workflow) ... ok
+test_indicators_are_scoped_and_private (comunidad.tests.PlatformTests.test_indicators_are_scoped_and_private) ... ok
+test_invalid_state_transition_rejected (comunidad.tests.PlatformTests.test_invalid_state_transition_rejected) ... ok
+test_organization_relations_cannot_be_mixed (comunidad.tests.PlatformTests.test_organization_relations_cannot_be_mixed) ... ok
+test_password_hash_and_audit_privacy (comunidad.tests.PlatformTests.test_password_hash_and_audit_privacy) ... ok
+test_private_activity_requires_membership (comunidad.tests.PlatformTests.test_private_activity_requires_membership) ... ok
+test_profile_links_with_history_cannot_change (comunidad.tests.PlatformTests.test_profile_links_with_history_cannot_change) ... ok
+test_protected_delete_rolls_back_audit (comunidad.tests.PlatformTests.test_protected_delete_rolls_back_audit) ... ok
+test_public_and_private_activity_visibility (comunidad.tests.PlatformTests.test_public_and_private_activity_visibility) ... ok
+test_registration_requires_published_future_activity (comunidad.tests.PlatformTests.test_registration_requires_published_future_activity) ... ok
+test_resource_nonoverlap_is_reusable (comunidad.tests.PlatformTests.test_resource_nonoverlap_is_reusable) ... ok
+test_resource_overlap_and_stock_reduction (comunidad.tests.PlatformTests.test_resource_overlap_and_stock_reduction) ... ok
+test_search_filters_and_invalid_dates (comunidad.tests.PlatformTests.test_search_filters_and_invalid_dates) ... ok
+test_volunteer_cannot_escalate_role_or_edit_activity (comunidad.tests.PlatformTests.test_volunteer_cannot_escalate_role_or_edit_activity) ... ok
+test_volunteer_only_sees_own_participation (comunidad.tests.PlatformTests.test_volunteer_only_sees_own_participation) ... ok
+test_volunteer_own_registration_and_duplicate (comunidad.tests.PlatformTests.test_volunteer_own_registration_and_duplicate) ... ok
+test_weak_password_and_duplicate_username_rejected (comunidad.tests.PlatformTests.test_weak_password_and_duplicate_username_rejected) ... ok
+test_concurrent_last_seat (comunidad.tests.ConcurrencyTests.test_concurrent_last_seat) ... skipped 'Los bloqueos concurrentes se verifican con MySQL.'
+test_concurrent_overlapping_resources (comunidad.tests.ConcurrencyTests.test_concurrent_overlapping_resources) ... skipped 'Los bloqueos concurrentes se verifican con MySQL.'
+test_concurrent_resource_reservations (comunidad.tests.ConcurrencyTests.test_concurrent_resource_reservations) ... skipped 'Los bloqueos concurrentes se verifican con MySQL.'
+
+----------------------------------------------------------------------
+Ran 40 tests in 28.151s
+
+OK (skipped=3)
+Destroying test database for alias 'default' ('file:memorydb_default?mode=memory&cache=shared')...
+ OK
+System check identified no issues (0 silenced).

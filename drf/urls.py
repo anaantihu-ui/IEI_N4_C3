@@ -1,14 +1,10 @@
-"""Rutas del proyecto Django IEI_N4_C3."""
 from django.contrib import admin
-from django.urls import path, include
-from mi_app import views
+from django.urls import include, path
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    path("api/", include("biblio_app.urls")),
+    path("", RedirectView.as_view(url="/api/", permanent=False)),
+    path("api/", include("comunidad.urls")),
     path("api-auth/", include("rest_framework.urls")),
-    path('admin/', admin.site.urls),
-    path('', views.bienvenida, name='bienvenida'),
+    path("admin/", admin.site.urls),
 ]
-
-# Se conserva el manejador 404 original.
-handler404 = 'mi_app.views.mi_error_404'
