@@ -1,57 +1,41 @@
-"""Comprobaciones estáticas de la entrega IEI_N4_C3 (sin conectar a MySQL)."""
+"""Comprueba archivos y coherencia de la configuración pública; no sustituye los tests."""
 from pathlib import Path
-import sys
-import shutil
+import ast
 import subprocess
 import tempfile
+import shutil
 
-ROOT = Path(__file__).resolve().parents[1]
-required = ['manage.py', 'crear_base_datos.sql', '.env', '.env.example', '.gitignore',
-            'drf/settings.py', 'drf/urls.py', 'requirements.txt', 'README.md',
-            'biblio_app/models.py', 'biblio_app/serializers.py', 'biblio_app/views.py',
-            'biblio_app/urls.py', 'biblio_app/migrations/0001_initial.py']
-errors = []
-for name in required:
-    if not (ROOT / name).is_file():
-        errors.append(f'Falta {name}')
-
-# Git interpreta patrones, excepciones y directorios con sus reglas reales.
-# Un repositorio temporal permite verificar también una entrega descargada como ZIP.
-if shutil.which('git') is None:
-    errors.append('Se necesita Git instalado para verificar las exclusiones')
-elif (ROOT / '.gitignore').is_file():
-    with tempfile.TemporaryDirectory() as directory:
-        subprocess.run(['git', 'init', '-q', directory], check=True)
-        shutil.copyfile(ROOT / '.gitignore', Path(directory) / '.gitignore')
-        for name, expected in [('.env.local', True), ('mi_entorno/archivo', True),
-                               ('venv/archivo', True), ('crear_base_datos_local.sql', True),
-                               ('.env', False), ('.env.example', False)]:
-            result = subprocess.run(
-                ['git', '-c', 'core.excludesFile=', 'check-ignore', '--no-index', '-q', name],
-                cwd=directory, check=False)
-            if result.returncode not in (0, 1):
-                errors.append(f'No se pudo comprobar la exclusión de {name}')
-            elif (result.returncode == 0) != expected:
-                errors.append(f'Regla incorrecta para {name}: exclusión esperada={expected}')
-
-sql_file = ROOT / 'crear_base_datos.sql'
-sql = sql_file.read_text(encoding='utf-8') if sql_file.is_file() else ''
-for clause in ['CREATE DATABASE', 'CREATE USER', 'GRANT']:
-    if clause not in sql:
-        errors.append(f'Falta cláusula {clause} en SQL')
-
-env_file = ROOT / '.env'
-public_env = env_file.read_text(encoding='utf-8') if env_file.is_file() else ''
-for key in ['DJANGO_SECRET_KEY=', 'DB_NAME=', 'DB_USER=', 'DB_PASSWORD=']:
-    if key not in public_env:
-        errors.append(f'Falta {key} en .env')
-
-if (ROOT / '.env.local').exists():
-    errors.append('Un .env.local privado está presente en el paquete: no publicarlo')
-
+root = Path(__file__).resolve().parents[1]
+required = ['manage.py', '.env', '.env.example', '.gitignore', 'requirements.txt', 'README.md',
+            'crear_base_datos.sql', 'scripts/permisos_pruebas.sql', 'drf/settings.py', 'drf/urls.py',
+            'comunidad/models.py', 'comunidad/serializers.py', 'comunidad/views.py', 'comunidad/urls.py',
+            'comunidad/migrations/0001_initial.py', 'comunidad/tests.py', 'docs/MODELO_Y_REGLAS.md']
+errors = [f'Falta {p}' for p in required if not (root/p).is_file()]
+env_text = (root/'.env').read_text()
+if env_text != (root/'.env.example').read_text():
+    errors.append('.env y .env.example difieren')
+values = dict(line.split('=', 1) for line in env_text.splitlines() if '=' in line and not line.startswith('#'))
+sql = (root/'crear_base_datos.sql').read_text()
+for key in ['DB_NAME', 'DB_USER', 'DB_PASSWORD']:
+    if not values.get(key) or values[key] not in sql:
+        errors.append(f'{key} no coincide con el SQL')
+if not values.get('DJANGO_SECRET_KEY'):
+    errors.append('Falta DJANGO_SECRET_KEY')
+tree = ast.parse((root/'drf/settings.py').read_text())
+for node in ast.walk(tree):
+    if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'SECRET_KEY' for t in node.targets):
+        if not isinstance(node.value, ast.Call):
+            errors.append('SECRET_KEY debe leerse desde el entorno')
+if shutil.which('git'):
+    with tempfile.TemporaryDirectory() as d:
+        subprocess.run(['git', 'init', '-q', d], check=True)
+        shutil.copy(root/'.gitignore', Path(d)/'.gitignore')
+        for name, ignored in [('.env', False), ('.env.example', False), ('.env.local', True), ('crear_base_datos_local.sql', True), ('.venv/archivo', True)]:
+            result = subprocess.run(['git', '-c', 'core.excludesFile=', 'check-ignore', '--no-index', '-q', name], cwd=d)
+            if result.returncode not in [0, 1] or (result.returncode == 0) != ignored:
+                errors.append(f'Exclusión incorrecta: {name}')
+else:
+    errors.append('Se necesita Git para comprobar exclusiones')
 if errors:
-    print('FALLO EN VERIFICACION ESTATICA:')
-    for error in errors:
-        print(' -', error)
-    sys.exit(1)
-print('OK: requisitos de archivos y SQL detectados. No verifica conexion real a MySQL.')
+    raise SystemExit('\n'.join(errors))
+print('OK: archivos, SQL y entorno coherentes. Ejecuta migrate y test para verificar funcionamiento.')

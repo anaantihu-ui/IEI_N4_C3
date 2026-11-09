@@ -1,0 +1,28 @@
+MySQL 8.0.46-0ubuntu0.24.04.3
+crear_base_datos.sql OK
+crear_base_datos.sql OK
+scripts/permisos_pruebas.sql OK
+manage.py check --database default exit 0
+manage.py makemigrations --check --dry-run exit 0
+manage.py migrate --noinput exit 0
+manage.py migrate --check exit 0
+manage.py test --noinput -v 2 exit 0
+Datos demo preparados. Cuentas: coordinador_demo y voluntario_demo.
+Actividad: /api/actividades/1/. Las cuentas existentes conservan su contraseña.
+Datos demo preparados. Cuentas: coordinador_demo y voluntario_demo.
+Actividad: /api/actividades/1/. Las cuentas existentes conservan su contraseña.
+verificacion_http GET /api/organizaciones/ 200
+verificacion_http POST /api/organizaciones/ 201
+verificacion_http GET /api/organizaciones/2/ 200
+verificacion_http PUT /api/organizaciones/2/ 200
+verificacion_http PATCH /api/organizaciones/2/ 200
+verificacion_http DELETE /api/organizaciones/2/ 204
+verificacion_http GET /api/organizaciones/2/ 404
+voluntario_demo GET /api/actividades/ 200
+voluntario_demo POST /api/inscripciones/ 201
+voluntario_demo GET /api/inscripciones/1/ 200
+voluntario_demo PATCH /api/inscripciones/1/ 200
+coordinador_demo GET /api/actividades/indicadores/ 200
+coordinador_demo GET /api/auditoria/ 200
+voluntario_demo GET /api/auditoria/ 403
+VERIFICACION MYSQL Y HTTP COMPLETA

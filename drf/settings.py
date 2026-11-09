@@ -21,6 +21,10 @@ DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = [host.strip() for host in config(
     'DJANGO_ALLOWED_HOSTS', default='127.0.0.1,localhost'
 ).split(',') if host.strip()]
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in config(
+    'DJANGO_CSRF_TRUSTED_ORIGINS', default=''
+).split(',') if origin.strip()]
+LOGIN_REDIRECT_URL = '/api/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,9 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'biblio_app',
-    'mi_app',
-    'incidencias',
+    'comunidad',
 ]
 
 MIDDLEWARE = [
@@ -70,12 +72,13 @@ if DB_ENGINE == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('DB_NAME', default='incidencias'),
-            'USER': config('DB_USER', default='bibliohub_app'),
-            'PASSWORD': config('DB_PASSWORD', default=''),
+            'NAME': config('DB_NAME', default='voluntariados'),
+            'USER': config('DB_USER', default='voluntariados_app'),
+            'PASSWORD': config('DB_PASSWORD'),
             'HOST': config('DB_HOST', default='127.0.0.1'),
             'PORT': config('DB_PORT', default=3306, cast=int),
             'OPTIONS': {'charset': 'utf8mb4'},
+            'TEST': {'NAME': config('DB_TEST_NAME', default='test_voluntariados')},
         }
     }
 elif DB_ENGINE == 'sqlite':
@@ -103,6 +106,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 50,
+    "DEFAULT_FILTER_BACKENDS": ["rest_framework.filters.SearchFilter", "rest_framework.filters.OrderingFilter"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.BasicAuthentication",
