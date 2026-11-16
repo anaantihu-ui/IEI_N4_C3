@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Panel general | Comunidad+{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="hero-eyebrow"><span class="eyebrow-dot"></span> PLATAFORMA DE VOLUNTARIADOS</div>
+    <h1>Unimos personas.<br><span>Multiplicamos impacto.</span></h1>
+    <p>Administra el trabajo comunitario desde un solo lugar. Visualiza las actividades, conecta voluntarios y organiza tus recursos.</p>
+    <a href="{% url 'gestion' 'actividades' %}" class="btn btn-light">Explorar actividades <svg class="ico"><use href="#ic-arrow"></use></svg></a>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <span class="orb orb-one"></span><span class="orb orb-two"></span><span class="orb orb-three"></span>
+    <div class="art-card"><svg class="ico"><use href="#ic-heart"></use></svg><span>Conectando<br>comunidades</span></div>
+  </div>
+</section>
+
+<div class="section-heading"><div><span class="overline">ESTADÍSTICAS</span><h2>Panorama general</h2><p>Datos obtenidos de tu API REST</p></div><button type="button" class="btn btn-outline btn-sm" id="refresh-dashboard"><svg class="ico"><use href="#ic-refresh"></use></svg> Actualizar</button></div>
+
+<section class="stat-grid" aria-label="Indicadores del proyecto">
+  <article class="stat-card"><div class="stat-top"><span class="stat-icon mint"><svg class="ico"><use href="#ic-users"></use></svg></span><span class="stat-caption">Personas registradas</span></div><div class="stat-value" id="stat-voluntarios">—</div><div class="stat-name">Voluntarios</div><div class="stat-track"><span class="fill mint-fill"></span></div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-icon blue"><svg class="ico"><use href="#ic-calendar"></use></svg></span><span class="stat-caption">Oportunidades</span></div><div class="stat-value" id="stat-actividades">—</div><div class="stat-name">Actividades</div><div class="stat-track"><span class="fill blue-fill"></span></div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-icon violet"><svg class="ico"><use href="#ic-building"></use></svg></span><span class="stat-caption">En colaboración</span></div><div class="stat-value" id="stat-organizaciones">—</div><div class="stat-name">Organizaciones</div><div class="stat-track"><span class="fill violet-fill"></span></div></article>
+  <article class="stat-card"><div class="stat-top"><span class="stat-icon gold"><svg class="ico"><use href="#ic-list"></use></svg></span><span class="stat-caption">Participaciones</span></div><div class="stat-value" id="stat-inscripciones">—</div><div class="stat-name">Inscripciones</div><div class="stat-track"><span class="fill gold-fill"></span></div></article>
+</section>
+
+<section class="dashboard-grid">
+  <div class="surface-card">
+    <div class="card-heading"><div><span class="overline">PLANIFICACIÓN</span><h2>Actividades recientes</h2><p>Próximas fechas registradas</p></div><a href="{% url 'gestion' 'actividades' %}" class="text-link">Ver todas <svg class="ico"><use href="#ic-arrow"></use></svg></a></div>
+    <div id="dashboard-activities" class="activity-list"><div class="loading-line">Cargando actividades…</div></div>
+  </div>
+  <div class="surface-card">
+    <div class="card-heading"><div><span class="overline">COMUNIDAD</span><h2>Últimos voluntarios</h2><p>Personas registradas recientemente</p></div><a href="{% url 'gestion' 'voluntarios' %}" class="text-link">Ver todos <svg class="ico"><use href="#ic-arrow"></use></svg></a></div>
+    <div id="dashboard-volunteers" class="volunteer-list"><div class="loading-line">Cargando voluntarios…</div></div>
+  </div>
+</section>
+
+<section class="quick-panel"><div class="quick-copy"><span class="quick-icon"><svg class="ico"><use href="#ic-layers"></use></svg></span><div><h3>Todo en un solo lugar</h3><p>Los 13 módulos de tu aplicación están disponibles para consultar y administrar.</p></div></div><a href="{% url 'gestion' 'voluntarios' %}" class="btn btn-primary">Comenzar a gestionar <svg class="ico"><use href="#ic-arrow"></use></svg></a></section>
+{% endblock %}

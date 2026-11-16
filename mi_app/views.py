@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import Http404
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import viewsets
 from .models import (
     Region, Comuna, Perfil, Organizacion, Categoria,
@@ -14,8 +16,42 @@ from .serializer import (
 )
 
 
+PANEL_PAGES = {
+    'voluntarios': ('Voluntarios', 'Registra y administra las personas que participan en actividades comunitarias.'),
+    'actividades': ('Actividades', 'Planifica las actividades comunitarias, sus fechas, cupos y responsables.'),
+    'organizaciones': ('Organizaciones', 'Gestiona las organizaciones que coordinan iniciativas sociales.'),
+    'inscripciones': ('Inscripciones', 'Vincula voluntarios con actividades y registra su asistencia.'),
+    'recursos': ('Recursos', 'Administra los recursos disponibles para las organizaciones.'),
+    'regiones': ('Regiones', 'Mantén actualizado el catálogo de regiones.'),
+    'comunas': ('Comunas', 'Gestiona las comunas y su relación con las regiones.'),
+    'perfiles': ('Perfiles', 'Organiza los perfiles asociados a las personas voluntarias.'),
+    'categorias': ('Categorías', 'Clasifica las distintas actividades comunitarias.'),
+    'estados': ('Estados', 'Administra los estados posibles de las actividades.'),
+    'coordinadores': ('Coordinadores', 'Gestiona los responsables de las actividades y sus organizaciones.'),
+    'asignaciones': ('Asignaciones de recursos', 'Relaciona los recursos disponibles con las actividades.'),
+    'historial': ('Historial de estados', 'Consulta los cambios de estado registrados para cada actividad.'),
+}
+
+
+@ensure_csrf_cookie
 def bienvenida(request):
-    return render(request, 'bienvenida.html')
+    return render(request, 'dashboard.html', {
+        'active_page': 'inicio',
+        'page_title': 'Panel general',
+    })
+
+
+@ensure_csrf_cookie
+def panel(request, recurso):
+    page = PANEL_PAGES.get(recurso)
+    if page is None:
+        raise Http404('No existe ese módulo')
+    return render(request, 'panel.html', {
+        'active_page': recurso,
+        'page_title': page[0],
+        'page_description': page[1],
+        'recurso': recurso,
+    })
 
 
 def mi_error_404(request, exception):

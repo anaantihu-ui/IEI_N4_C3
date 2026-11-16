@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Página no encontrada</title>
-</head>
-<body>
-    <h1>Error 404 - Página no encontrada</h1>
-    <p>Lo sentimos, la ruta a la que intentas acceder no existe en este proyecto.</p>
-    <a href="/">Volver a la página de inicio</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Página no encontrada | Comunidad+{% endblock %}
+{% block content %}
+<section class="not-found"><span class="not-found-code">404</span><h1>No encontramos esa página</h1><p>La dirección solicitada no existe en esta plataforma.</p><a href="{% url 'inicio' %}" class="btn btn-primary">Volver al panel general <svg class="ico"><use href="#ic-arrow"></use></svg></a></section>
+{% endblock %}

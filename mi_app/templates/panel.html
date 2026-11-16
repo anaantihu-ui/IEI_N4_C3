@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | Comunidad+{% endblock %}
+{% block page_type %}panel{% endblock %}
+{% block content %}
+<section class="panel-intro">
+  <div class="panel-intro-copy"><span class="overline">GESTIÓN DE REGISTROS</span><h1>{{ page_title }}</h1><p>{{ page_description }}</p></div>
+  <button type="button" id="create-record" class="btn btn-primary"><svg class="ico"><use href="#ic-plus"></use></svg> Nuevo registro</button>
+</section>
+
+<section class="panel-tiles" aria-label="Resumen de la sección">
+  <div class="small-tile"><span>Registros encontrados</span><strong id="panel-count">—</strong></div>
+  <div class="small-tile"><span>Registros habilitados</span><strong id="panel-active">—</strong></div>
+  <div class="small-tile"><span>Última actualización</span><strong id="panel-updated">—</strong></div>
+</section>
+
+<section class="surface-card data-card">
+  <div class="table-toolbar">
+    <div class="search-wrap"><svg class="ico"><use href="#ic-search"></use></svg><input type="search" id="record-search" placeholder="Buscar en esta sección..." aria-label="Buscar registros"></div>
+    <div class="toolbar-actions">
+      <select id="record-filter" aria-label="Filtrar por estado"><option value="all">Todos los estados</option><option value="active">Habilitados</option><option value="inactive">Deshabilitados</option></select>
+      <button type="button" id="refresh-records" class="icon-button outlined" title="Actualizar registros" aria-label="Actualizar registros"><svg class="ico"><use href="#ic-refresh"></use></svg></button>
+    </div>
+  </div>
+  <div class="table-scroll"><table class="data-table"><thead id="record-head"></thead><tbody id="record-body"><tr><td class="table-message">Cargando registros…</td></tr></tbody></table></div>
+  <div class="table-footer"><span id="table-results">Preparando registros…</span><div class="pagination"><button type="button" id="page-prev" class="btn btn-outline btn-sm" disabled>Anterior</button><span id="page-label">1 / 1</span><button type="button" id="page-next" class="btn btn-outline btn-sm" disabled>Siguiente</button></div></div>
+</section>
+
+<dialog id="record-dialog" class="record-dialog" aria-labelledby="dialog-title">
+  <div class="dialog-head"><div><span class="overline">FORMULARIO DE GESTIÓN</span><h2 id="dialog-title">Nuevo registro</h2></div><button type="button" id="dialog-close" class="icon-button" aria-label="Cerrar formulario"><svg class="ico"><use href="#ic-x"></use></svg></button></div>
+  <form id="record-form">
+    <div id="dialog-fields" class="dialog-fields"></div>
+    <div id="form-error" class="form-error" role="alert" hidden></div>
+    <div class="dialog-footer"><button type="button" id="dialog-cancel" class="btn btn-outline">Cancelar</button><button type="submit" id="form-save" class="btn btn-primary">Guardar cambios</button></div>
+  </form>
+</dialog>
+{% endblock %}

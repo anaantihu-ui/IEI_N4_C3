@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plataforma de gestión de voluntariados y actividades comunitarias">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}Comunidad+ | Gestión de voluntariados{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'mi_app/css/app.css' %}">
+</head>
+<body data-page="{% block page_type %}dashboard{% endblock %}" data-resource="{{ recurso|default:'' }}">
+  <svg xmlns="http://www.w3.org/2000/svg" class="icon-sprite" aria-hidden="true">
+    <symbol id="ic-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="ic-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M17 5a3 3 0 0 1 0 6m1 3a5 5 0 0 1 3 5v1"/></symbol>
+    <symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 15h3"/></symbol>
+    <symbol id="ic-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 7h2m3 0h2M9 11h2m3 0h2M9 15h2m3 0h2M10 21v-3h4v3"/></symbol>
+    <symbol id="ic-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1"/></symbol>
+    <symbol id="ic-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 5v9l9 5 9-5V8M12 13v9"/></symbol>
+    <symbol id="ic-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    <symbol id="ic-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="ic-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="ic-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="ic-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="ic-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5 9a8 8 0 0 1 13-3l2 1M4 17l2 1a8 8 0 0 0 13-3"/></symbol>
+    <symbol id="ic-edit" viewBox="0 0 24 24"><path d="m4 20 4.5-1 11-11a2 2 0 0 0-3-3l-11 11L4 20Zm10-13 3 3"/></symbol>
+    <symbol id="ic-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v6m4-6v6"/></symbol>
+    <symbol id="ic-x" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+    <symbol id="ic-heart" viewBox="0 0 24 24"><path d="M20 5a5 5 0 0 0-7 0l-1 1-1-1a5 5 0 1 0-7 7l8 8 8-8a5 5 0 0 0 0-7Z"/></symbol>
+    <symbol id="ic-shield" viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3 8 8 11 5-3 8-6 8-11V5l-8-3Zm-4 9 3 3 5-5"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <div id="sidebar-shade" class="sidebar-shade" hidden></div>
+    <aside id="sidebar" class="sidebar" aria-label="Navegación lateral">
+      <a href="{% url 'inicio' %}" class="brand" aria-label="Comunidad más, inicio">
+        <span class="brand-symbol"><svg class="ico"><use href="#ic-heart"></use></svg></span>
+        <span class="brand-wordmark">Comunidad<span>+</span><small>GESTIÓN SOCIAL</small></span>
+      </a>
+      <div class="side-kicker">ESPACIO DE TRABAJO</div>
+      <nav class="side-nav" aria-label="Menú principal">
+        <a href="{% url 'inicio' %}" class="nav-link {% if active_page == 'inicio' %}active{% endif %}"><svg class="ico"><use href="#ic-grid"></use></svg> Panel general</a>
+        <div class="nav-group-label">GESTIÓN</div>
+        <a href="{% url 'gestion' 'voluntarios' %}" class="nav-link {% if active_page == 'voluntarios' %}active{% endif %}"><svg class="ico"><use href="#ic-users"></use></svg> Voluntarios</a>
+        <a href="{% url 'gestion' 'actividades' %}" class="nav-link {% if active_page == 'actividades' %}active{% endif %}"><svg class="ico"><use href="#ic-calendar"></use></svg> Actividades</a>
+        <a href="{% url 'gestion' 'organizaciones' %}" class="nav-link {% if active_page == 'organizaciones' %}active{% endif %}"><svg class="ico"><use href="#ic-building"></use></svg> Organizaciones</a>
+        <a href="{% url 'gestion' 'inscripciones' %}" class="nav-link {% if active_page == 'inscripciones' %}active{% endif %}"><svg class="ico"><use href="#ic-list"></use></svg> Inscripciones</a>
+        <a href="{% url 'gestion' 'recursos' %}" class="nav-link {% if active_page == 'recursos' %}active{% endif %}"><svg class="ico"><use href="#ic-box"></use></svg> Recursos</a>
+        <details class="nav-details" {% if active_page == 'regiones' or active_page == 'comunas' or active_page == 'perfiles' or active_page == 'categorias' or active_page == 'estados' or active_page == 'coordinadores' or active_page == 'asignaciones' or active_page == 'historial' %}open{% endif %}>
+          <summary class="nav-link nav-summary"><svg class="ico"><use href="#ic-layers"></use></svg> Otros módulos <span class="summary-caret">⌄</span></summary>
+          <div class="submenu">
+            <a href="{% url 'gestion' 'regiones' %}" {% if active_page == 'regiones' %}class="selected"{% endif %}>Regiones</a>
+            <a href="{% url 'gestion' 'comunas' %}" {% if active_page == 'comunas' %}class="selected"{% endif %}>Comunas</a>
+            <a href="{% url 'gestion' 'perfiles' %}" {% if active_page == 'perfiles' %}class="selected"{% endif %}>Perfiles</a>
+            <a href="{% url 'gestion' 'categorias' %}" {% if active_page == 'categorias' %}class="selected"{% endif %}>Categorías</a>
+            <a href="{% url 'gestion' 'estados' %}" {% if active_page == 'estados' %}class="selected"{% endif %}>Estados</a>
+            <a href="{% url 'gestion' 'coordinadores' %}" {% if active_page == 'coordinadores' %}class="selected"{% endif %}>Coordinadores</a>
+            <a href="{% url 'gestion' 'asignaciones' %}" {% if active_page == 'asignaciones' %}class="selected"{% endif %}>Asignaciones</a>
+            <a href="{% url 'gestion' 'historial' %}" {% if active_page == 'historial' %}class="selected"{% endif %}>Historial de estados</a>
+          </div>
+        </details>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-note"><svg class="ico"><use href="#ic-shield"></use></svg><div><strong>Proyecto académico</strong><span>Django + REST Framework</span></div></div>
+        <span class="side-foot">IEI_N4_C3 · Plataforma de voluntariados</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="nav-toggle" class="icon-button mobile-nav" type="button" aria-label="Abrir menú" aria-controls="sidebar" aria-expanded="false"><svg class="ico"><use href="#ic-menu"></use></svg></button>
+          <div class="crumb">Plataforma <span>/</span> <strong>{{ page_title|default:"Panel general" }}</strong></div>
+        </div>
+        <div class="topbar-right">
+          <span class="status-chip" id="api-status" role="status"><i class="status-light"></i><span>Comprobando API</span></span>
+          <span class="top-avatar" title="Entorno académico">CG</span>
+        </div>
+      </header>
+      <main class="main-content" id="main-content">
+        {% block content %}{% endblock %}
+        <footer class="page-footer"><span>Comunidad+ · Gestión de actividades comunitarias</span><span>Proyecto IEI_N4_C3</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="{% static 'mi_app/js/app.js' %}" defer></script>
+</body>
+</html>

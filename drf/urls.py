@@ -7,7 +7,8 @@ from mi_app import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.bienvenida, name='bienvenida'),
+    path('', views.bienvenida, name='inicio'),
+    path('gestion/<slug:recurso>/', views.panel, name='gestion'),
     path('api/', include('mi_app.urls')),
 ]
 

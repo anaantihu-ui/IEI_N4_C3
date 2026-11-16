@@ -121,3 +121,34 @@ Esta opción sirve para pruebas locales; **no equivale a verificar MySQL**.
 ## Entrega solicitada
 
 Entregar la URL pública de este repositorio. En su raíz figuran **sql.sql**, **.env** (plantilla pública) y **.gitignore** modificado; los cambios de base de datos pueden reproducirse mediante el SQL y las migraciones de Django.
+
+
+## Interfaz web de gestión (HTML, CSS y JavaScript)
+
+El proyecto incorpora una interfaz profesional y adaptable para demostrar el funcionamiento de la API REST sin modificar los 13 modelos ni sus migraciones.
+
+- **/**: dashboard con indicadores obtenidos de la API y listados de actividades y voluntarios.
+- **/gestion/voluntarios/**, **/gestion/actividades/**, **/gestion/organizaciones/**, **/gestion/inscripciones/** y **/gestion/recursos/**: módulos principales de administración.
+- **/gestion/regiones/**, **/gestion/comunas/**, **/gestion/perfiles/**, **/gestion/categorias/**, **/gestion/estados/**, **/gestion/coordinadores/**, **/gestion/asignaciones/** y **/gestion/historial/**: catálogos y módulos complementarios.
+
+Las tablas permiten buscar, filtrar por habilitado cuando aplica y navegar entre páginas. Los formularios crean y editan registros mediante POST/PATCH, y la eliminación exige confirmación antes de enviar DELETE. Los campos de relaciones obtienen sus opciones de otros endpoints; si todavía no existen datos relacionados, primero deben registrarse las regiones, comunas, organizaciones, etc.
+
+Los archivos de la interfaz son:
+- **mi_app/templates/base.html**: estructura general y navegación.
+- **mi_app/templates/dashboard.html**: panel principal.
+- **mi_app/templates/panel.html**: formulario y tabla reutilizable.
+- **mi_app/static/mi_app/css/app.css**: estilos responsivos propios, sin depender de una CDN.
+- **mi_app/static/mi_app/js/app.js**: consumo de la API REST y acciones CRUD.
+- **mi_app/tests.py**: pruebas de rutas y renderizado de la interfaz.
+
+**Para verla funcionando en Windows (PowerShell)**, estando en la raíz del proyecto y con las dependencias instaladas:
+
+~~~powershell
+$env:DB_ENGINE = "sqlite"
+python manage.py migrate
+python manage.py runserver
+~~~
+
+Abre **http://127.0.0.1:8000/** en el navegador. Las cifras y listas vienen de la base de datos real; si la base está vacía, verás ceros y estados vacíos, no datos inventados. Para usar MySQL, configura credenciales privadas y el motor conforme a las instrucciones anteriores. Prueba el renderizado de la interfaz con **python manage.py test mi_app**.
+
+**Seguridad:** es una interfaz de demostración académica, no un sistema preparado para Internet. La API original no configura autenticación ni permisos específicos para proteger RUT, correos u otros datos personales. Antes de desplegarla públicamente deben añadirse autenticación, autorización y controles de acceso.
