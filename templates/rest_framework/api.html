@@ -1,0 +1,116 @@
+{% extends "rest_framework/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load rest_framework %}
+{% block title %}{{ name|default:"Explorador de API" }} · Comunidad+{% endblock %}
+{% block meta %}{{ block.super }}<meta name="viewport" content="width=device-width, initial-scale=1">{% endblock %}
+{% block style %}
+  {{ block.super }}
+  <style>
+
+:root{--bg:#f4f7fa;--navy:#13273e;--green:#138566;--line:#e4ebf1;--text:#223a51;--muted:#778ba0}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"Segoe UI",Inter,system-ui,sans-serif;font-size:14px}a{color:var(--green);text-decoration:none}a:hover{color:#0b694f;text-decoration:none}
+.cp-sidebar{position:fixed;inset:0 auto 0 0;width:255px;background:var(--navy);color:#aebfd0;z-index:60;display:flex;flex-direction:column;overflow-y:auto;box-shadow:6px 0 27px #132d4010}
+.cp-brand{display:flex;align-items:center;gap:11px;color:white!important;margin:29px 22px 35px;font-size:21px;font-weight:800;letter-spacing:-.5px}
+.cp-logo{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;font-size:25px;color:white;background:linear-gradient(135deg,#35cf91,#0c886a);box-shadow:0 6px 20px #0e79553f}
+.cp-brand b{color:#6becbc}.cp-brand small{display:block;color:#9bb1c7;font-size:9px;letter-spacing:2px;font-weight:700;margin-top:4px}
+.cp-caption{padding:0 22px 10px;color:#6e879f;font-size:10px;font-weight:850;letter-spacing:1.9px}
+.cp-menu{display:grid;gap:3px;padding:0 11px 25px}.cp-menu a{display:flex;align-items:center;gap:11px;border-radius:10px;padding:10px 13px;color:#b6c7d9;font-size:12px;font-weight:630;min-height:40px}
+.cp-menu a:hover,.cp-menu a:focus-visible{background:#ffffff13;color:white}.cp-menu a.cp-selected{color:white;background:#168364}
+.cp-mini{width:28px;height:27px;display:grid;place-items:center;color:#b2e5d0;background:#ffffff15;border-radius:8px;font-size:10px;font-weight:800;flex-shrink:0}
+.cp-menu a.cp-selected .cp-mini{background:#ffffff25;color:white}
+.cp-section{font-size:10px;font-weight:800;letter-spacing:1.6px;color:#738da6;padding:20px 12px 8px}
+.cp-side-foot{padding:23px;margin-top:auto;border-top:1px solid #ffffff15;color:#7890a7;font-size:10px}
+.cp-topbar{margin-left:255px;height:76px;background:#fffd;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:35;display:flex;align-items:center;justify-content:space-between;gap:15px;padding:0 38px}
+.cp-crumb{font-size:12px;color:#7d91a3}.cp-crumb strong{color:#233d53}.cp-crumb i{font-style:normal;padding:0 10px;color:#b9c7d5}
+.cp-top-right{display:flex;align-items:center;gap:13px}.cp-chip{font-size:11px;color:#187b59;background:#edf9f2;border:1px solid #d4eddf;padding:7px 11px;border-radius:30px;font-weight:800;white-space:nowrap}.cp-chip:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#2ac18a;margin-right:7px}
+.cp-back{font-size:11px;color:var(--green)!important;font-weight:750;background:#f1f8f4;padding:9px 12px;border-radius:9px;white-space:nowrap}
+.cp-userlinks ul{margin:0!important;padding:0!important;list-style:none}.cp-userlinks a{font-size:11px}
+.wrapper{background:var(--bg);min-height:100vh}.wrapper>.container{margin-left:255px!important;margin-right:0!important;max-width:1600px!important;width:auto!important;padding:28px 37px 40px!important;min-height:calc(100vh - 76px)}#content{width:100%}
+.cp-breadcrumb{display:flex;align-items:center;gap:8px;color:#889aac;font-size:11px;margin-bottom:19px}.cp-breadcrumb a{color:#8397a8}.cp-breadcrumb b{font-weight:400;color:#b9c7d3}
+.cp-hero{border-radius:18px;background:linear-gradient(110deg,#143348,#13575a 65%,#148363);color:#fff;padding:28px 32px;margin-bottom:17px;box-shadow:0 10px 30px #0a625025;position:relative;overflow:hidden}
+.cp-hero:after{content:"";position:absolute;right:-95px;top:-130px;width:335px;height:335px;border-radius:50%;border:42px solid #ffffff0e;pointer-events:none}
+.cp-overline{font-size:10px;font-weight:800;color:#98edd0;letter-spacing:2px;display:block;margin-bottom:10px}
+.cp-hero h1{font-size:30px;line-height:1.2;letter-spacing:-.7px;font-weight:800;color:white;margin:0 0 10px;position:relative;overflow-wrap:anywhere}.cp-hero p{font-size:12px;line-height:1.8;margin:0;max-width:650px;color:#c9e5e0;position:relative}
+.cp-status{position:absolute;top:28px;right:27px;font-size:11px;font-weight:700;border:1px solid #ffffff36;background:#ffffff18;border-radius:10px;padding:8px 12px}
+.cp-links{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}.cp-links a{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:750;color:#4d687b}.cp-links a:hover{color:var(--green);border-color:#bce5cf}
+#content>.region{display:flex;justify-content:flex-end;flex-wrap:wrap;align-items:center;gap:8px;min-height:48px;margin-bottom:11px}#content>.region:after{display:none}#content>.region fieldset{margin:0;border:0;padding:0}#content>.region form,#content>.region .pull-right,#content>.region .button-form{float:none!important;margin:0!important}
+#content .btn,#content button.btn{border-radius:9px;padding:9px 15px;font-weight:750;font-size:12px;text-shadow:none;box-shadow:none}
+#content .btn-primary{background:var(--green);border-color:var(--green);color:white}#content .btn-primary:hover{background:#0e6c53;border-color:#0e6c53}#content .btn-default{color:#50677c;background:#fff;border:1px solid #dce6ed}#content .btn-danger{background:#ce5357;border-color:#ce5357}
+#content .dropdown-menu{border:1px solid #dfebf1;border-radius:9px;box-shadow:0 14px 27px #16344d29}#content .dropdown-menu>li>a{font-size:12px;padding:10px 14px}
+#content .content-main{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 27px;box-shadow:0 6px 22px #26374b0b;margin:0 0 18px;width:100%;float:none!important}#content .content-main>.page-header{display:none}#content .content-main>.pull-left{float:none!important;max-width:100%;font-size:12px;color:#75879a}#content .content-main>.pull-right{float:none!important}
+#content .request-info:before{content:"SOLICITUD";font-size:10px;letter-spacing:1.7px;color:#8194a5;display:block;font-weight:850;margin:13px 0 9px}#content .response-info:before{content:"RESPUESTA DEL SERVIDOR";font-size:10px;letter-spacing:1.7px;color:#8194a5;display:block;font-weight:850;margin:19px 0 9px}
+#content pre.prettyprint{background:#10253b;color:#d7e7f5;border:1px solid #24415b;border-radius:12px;padding:20px 23px;max-height:490px;overflow:auto;font-family:Consolas,"Cascadia Code",monospace;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.8;box-shadow:none;margin:0}
+#content pre.prettyprint b{color:#8bedbd}#content pre.prettyprint .meta{color:#a5c0d5}#content pre.prettyprint .meta b{color:#6ee9a7}#content pre.prettyprint a{color:#8acfe8}
+#content .tabbable{border:1px solid var(--line);border-radius:15px;overflow:hidden;margin:19px 0;background:#fff;box-shadow:0 6px 22px #26374b0b}
+#content .nav-tabs{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0!important;padding:13px 15px 0!important;background:#fff;border-bottom:1px solid var(--line);min-height:51px}#content .nav-tabs:before,#content .nav-tabs:after{display:none}#content .nav-tabs>li{float:none!important;margin:0}
+#content .nav-tabs>li>a{border:0!important;background:transparent;border-radius:8px 8px 0 0;color:#8094a5;font-size:12px;font-weight:800;padding:11px 14px!important}#content .nav-tabs>li.active>a,#content .nav-tabs>li>a:hover{background:#e8f6ee!important;color:#12795b!important}
+#content .well,#content .well.tab-content{background:white;box-shadow:none;border:1px solid var(--line);border-radius:13px;padding:22px 25px;margin:0 0 18px}#content .tabbable>.well.tab-content{border:0;margin:0;border-radius:0}#content .form-horizontal .control-label{font-size:12px;color:#4a6177;font-weight:800}
+#content input:not([type="checkbox"]):not([type="radio"]),#content select,#content textarea,#content .form-control{border:1px solid #dbe4eb;border-radius:9px;padding:10px 12px;font-size:12px;min-height:39px;background:white;color:#244056;max-width:100%;width:100%;height:auto;box-shadow:none}
+#content textarea{min-height:105px}#content .form-group{margin-bottom:17px}#content .form-actions{display:flex;justify-content:flex-end;gap:9px;padding:15px;background:#f7faf8;border:1px solid #e7efea;border-radius:9px}#content .help-block{font-size:11px;color:#8498a8}
+#content .modal-content{border-radius:13px;box-shadow:0 25px 55px #0b243e55}#content .pagination>li>a,#content .pagination>li>span{color:var(--green);border-color:#dfebe6}#content .pagination>.active>a{color:#fff;background:var(--green);border-color:var(--green)}
+.cp-footnote{color:#8195a6;font-size:11px;line-height:1.65;margin:14px 0 0;padding:0 4px}
+@media(max-width:1100px){.cp-sidebar{width:218px}.cp-topbar{margin-left:218px;padding:0 21px}.wrapper>.container{margin-left:218px!important;padding:23px!important}}
+@media(max-width:880px){.cp-sidebar{position:static;width:100%;height:auto}.cp-brand{margin:15px 16px 9px}.cp-caption,.cp-section,.cp-side-foot{display:none}.cp-menu{display:flex;gap:4px;overflow-x:auto;padding:0 12px 13px}.cp-menu a{white-space:nowrap;flex-shrink:0}.cp-topbar{margin-left:0;height:62px}.wrapper>.container{margin-left:0!important;padding:18px!important}.cp-status{display:none}}
+@media(max-width:570px){.cp-topbar{padding:0 13px;height:54px}.cp-chip,.cp-userlinks{display:none}.wrapper>.container{padding:13px!important}.cp-hero{padding:23px 20px}.cp-hero h1{font-size:23px}.cp-hero p{font-size:11px}#content .content-main{padding:17px}#content pre.prettyprint{padding:14px;font-size:11px}#content>.region{justify-content:flex-start}}
+
+  </style>
+{% endblock %}
+{% block navbar %}
+  <aside class="cp-sidebar" aria-label="Navegación por recursos">
+    <a href="{% url 'inicio' %}" class="cp-brand">
+      <span class="cp-logo" aria-hidden="true">♥</span>
+      <span>Comunidad<b>+</b><small>EXPLORADOR REST</small></span>
+    </a>
+    <div class="cp-caption">NAVEGACIÓN</div>
+    <nav class="cp-menu" aria-label="Menú de la API">
+      <a href="{% url 'inicio' %}"><span class="cp-mini">⌂</span> Panel principal</a>
+      <a href="/api/"><span class="cp-mini">API</span> Inicio de la API</a>
+<div class="cp-section">RECURSOS PRINCIPALES</div><a href="/api/voluntarios/" {% if "/api/voluntarios/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">VO</span>Voluntarios</a>
+<a href="/api/actividades/" {% if "/api/actividades/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">AC</span>Actividades</a>
+<a href="/api/organizaciones/" {% if "/api/organizaciones/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">OR</span>Organizaciones</a>
+<a href="/api/inscripciones/" {% if "/api/inscripciones/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">IN</span>Inscripciones</a>
+<a href="/api/recursos/" {% if "/api/recursos/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">RE</span>Recursos</a>
+<div class="cp-section">OTROS MÓDULOS</div><a href="/api/regiones/" {% if "/api/regiones/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">RG</span>Regiones</a>
+<a href="/api/comunas/" {% if "/api/comunas/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">CO</span>Comunas</a>
+<a href="/api/perfiles/" {% if "/api/perfiles/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">PE</span>Perfiles</a>
+<a href="/api/categorias/" {% if "/api/categorias/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">CA</span>Categorías</a>
+<a href="/api/estados/" {% if "/api/estados/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">ES</span>Estados</a>
+<a href="/api/coordinadores/" {% if "/api/coordinadores/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">CD</span>Coordinadores</a>
+<a href="/api/asignaciones/" {% if "/api/asignaciones/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">AS</span>Asignaciones</a>
+<a href="/api/historial/" {% if "/api/historial/" in request.path %}class="cp-selected"{% endif %}><span class="cp-mini">HI</span>Historial</a>
+    </nav>
+    <div class="cp-side-foot">Django REST Framework · IEI_N4_C3</div>
+  </aside>
+  <header class="cp-topbar">
+    <span class="cp-crumb">Plataforma <i>/</i> <strong>Explorador de API</strong></span>
+    <div class="cp-top-right">
+      <span class="cp-chip">API REST</span>
+      <span class="cp-userlinks">{% if user.is_authenticated %}{% optional_logout request user csrf_token %}{% else %}{% optional_login request %}{% endif %}</span>
+      <a href="{% url 'inicio' %}" class="cp-back">Ir al dashboard ↗</a>
+    </div>
+  </header>
+{% endblock %}
+{% block breadcrumbs %}
+  <nav class="cp-breadcrumb" aria-label="Ruta actual">
+    <a href="{% url 'inicio' %}">Comunidad+</a><b>›</b>
+    <a href="/api/">API REST</a><b>›</b>
+    <span>{{ name|default:"Recurso" }}</span>
+  </nav>
+{% endblock %}
+{% block content %}
+  <section class="cp-hero">
+    <span class="cp-overline">PLATAFORMA DE VOLUNTARIADOS · API REST</span>
+    <h1>{{ name|default:"Explorador de recursos" }}</h1>
+    <p>Consulta registros y utiliza los formularios para probar las operaciones REST. Esta pantalla muestra los datos reales de tu proyecto Django.</p>
+    <span class="cp-status">HTTP {{ response.status_code }}</span>
+  </section>
+  <nav class="cp-links" aria-label="Accesos rápidos">
+    <a href="{% url 'gestion' 'voluntarios' %}">Gestión de voluntarios</a>
+    <a href="{% url 'gestion' 'actividades' %}">Gestión de actividades</a>
+    <a href="{% url 'gestion' 'organizaciones' %}">Gestión de organizaciones</a>
+    <a href="/api/">Todos los endpoints</a>
+  </nav>
+  {{ block.super }}
+  <p class="cp-footnote"><strong>Nota:</strong> Si la respuesta muestra <code>[]</code>, la tabla del recurso todavía no tiene registros.</p>
+{% endblock %}

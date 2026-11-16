@@ -152,3 +152,26 @@ python manage.py runserver
 Abre **http://127.0.0.1:8000/** en el navegador. Las cifras y listas vienen de la base de datos real; si la base está vacía, verás ceros y estados vacíos, no datos inventados. Para usar MySQL, configura credenciales privadas y el motor conforme a las instrucciones anteriores. Prueba el renderizado de la interfaz con **python manage.py test mi_app**.
 
 **Seguridad:** es una interfaz de demostración académica, no un sistema preparado para Internet. La API original no configura autenticación ni permisos específicos para proteger RUT, correos u otros datos personales. Antes de desplegarla públicamente deben añadirse autenticación, autorización y controles de acceso.
+
+
+## Diseño personalizado del explorador web de la API
+
+Además del dashboard, las páginas de Django REST Framework (como /api/voluntarios/) utilizan ahora el tema Comunidad+, con barra lateral, menú de recursos, encabezado y diseño profesional para las respuestas JSON y los formularios integrados.
+
+La personalización se encuentra en **templates/rest_framework/api.html** y extiende la plantilla oficial de Django REST Framework. En **drf/settings.py** se añade BASE_DIR / 'templates' a TEMPLATES['DIRS']. Las operaciones API y las vistas originales de DRF siguen intactas; el estilo no modifica respuestas cuando se solicita el formato JSON.
+
+### Si la pantalla sigue sin CSS
+
+Descarga o actualiza el proyecto desde GitHub, reinicia runserver y recarga con Ctrl+F5. En desarrollo local verifica DEBUG=True, que permite servir los archivos estáticos de DRF con runserver. Ejecuta:
+
+~~~powershell
+python manage.py findstatic rest_framework/css/bootstrap.min.css
+~~~
+
+Si no se encuentra el archivo, comprueba las dependencias. Si el navegador recibe 404 al solicitar /static/rest_framework/css/bootstrap.min.css, revisa la configuración de archivos estáticos y DEBUG. El tema incluye estilos inline como respaldo, pero algunas interacciones de los formularios requieren los JavaScript estáticos de Django REST Framework.
+
+Verifica el tema y la compatibilidad de la API con:
+
+~~~powershell
+python manage.py test mi_app.tests.TemaAPINavegableTests
+~~~

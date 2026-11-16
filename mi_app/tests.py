@@ -28,3 +28,21 @@ class InterfazGestionTests(SimpleTestCase):
     def test_ruta_rest_sigue_registrada(self):
         coincidencia = resolve("/api/voluntarios/")
         self.assertEqual(coincidencia.func.cls.__name__, "VoluntarioViewSet")
+
+
+from django.test import TestCase
+
+
+class TemaAPINavegableTests(TestCase):
+    def test_api_html_tiene_tema_comunidad(self):
+        respuesta = self.client.get("/api/voluntarios/", HTTP_ACCEPT="text/html")
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertContains(respuesta, "Comunidad+")
+        self.assertContains(respuesta, "EXPLORADOR REST")
+        self.assertContains(respuesta, "cp-hero")
+        self.assertTemplateUsed(respuesta, "rest_framework/api.html")
+
+    def test_json_no_cambia(self):
+        respuesta = self.client.get("/api/voluntarios/", HTTP_ACCEPT="application/json")
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(respuesta.json(), [])
