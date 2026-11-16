@@ -1,94 +1,123 @@
-# IEI_N4_C3
-Clases de Backend con Django
+# IEI_N4_C3 — Plataforma de Voluntariados y Actividades Comunitarias
 
-## Creación de Proyectos con Django
+Proyecto académico de Programación Backend desarrollado con **Python, Django y Django REST Framework**. Permite definir y consultar datos de organizaciones, actividades comunitarias, voluntarios, inscripciones y recursos a través de una API REST.
 
-1. **Creación de Ambiente Virtual**
-    - Un ambiente virtual mantendrá asilada toda la configuración de nuestro proyecto y su entorno de trabajo.- Habiendo creado nuestro repositorio, abrimos la carpeta contenedora en VS Code.</li>
-    - Estando ubicados en el directorio principal, iniciamos un nuevo terminal.</li>
-    - Para crear el ambiente virtual, ejecutamos el siguiente comando en el terminal:
-    ```
-    python -m venv nombre_ambiente
-    ```
-    
-2. **Activación de Ambiente Virtual**
-    - Mediante el terminal accedemos al directorio creado anteriormente, ejecutando el siguiente comando:
-    ```
-    cd nombre_ambiente\Scripts
-    ```
-    - Para activar el ambiente virtual, ejecutamos el siguiente comando en el terminal:
-    ```
-    .\Activate
-    ```
-    - Si no se puede ejecutar el comando, debemos darle permisos al terminal, mediante el siguiente comando:
-    ```
-    Set-ExecutionPolicy Bypass -Scope CurrentUser
-    ```
-    - Habiendo ejecutado este comando, ya deberíamos poder ejecutar el comando anterior y activar nuestro ambiente virtual.
-    - Si necesitamos desactivar el ambiente virtual, usaremos el comando:
-    ```
-    deactivate
-    ```
+## Funcionalidades implementadas
 
-3. **Actualización de PIP**
-    - A pesar de haber generado un instalación del entorno desde 0, no está asegurado que contenga la última versión de PIP, por lo que debemos actualizarlo.
-    - Para actualizarlo, ejecutamos el siguiente comando en nuestro terminal:
-    ```
-    python -m pip install --upgrade pip
-    ```
+El archivo **mi_app/models.py** contiene 13 modelos: Region, Comuna, Perfil, Organizacion, Categoria, Estado, Voluntario, Coordinador, Actividad, Inscripcion, Recurso, AsignacionRecurso e HistorialEstado.
 
-4. **Instalación de Entorno Django**
-    - Mediante terminal nos ubicamos en el directorio raíz de la aplicación.
-    - Una vez ubicado el terminal en el directorio raíz, ejecutaremos el siguiente comando:
-    ```
-    pip install django
-    ```
-    - El comando anterior instaló todas las dependencias necesarias para que Django pueda trabajar.
-    - Crearemos el entorno de trabajo de Django mediante el comando:
-    ```
-    django-admin startproject motor_django .
-    ```
-    - Este comando creó la estructura de archivos de Django, es un directorio que contiene los archivos de configuración. 
-        - settings.py, contiene configuraciones generales, como la conexión a base de datos.
-        - urls.py, contiene las rutas para redirigir las solicitudes que lleguen a la aplicación.
+Cada uno cuenta con un **ModelSerializer** en **mi_app/serializer.py** y un **ModelViewSet** en **mi_app/views.py**. Las rutas se generan con **DefaultRouter** en **mi_app/urls.py**. Las vistas HTML de bienvenida y error 404 se mantienen.
 
-5. **Creación de la Aplicación**
-    - Para crear la aplicación que debemos construir, ejecutaremos el siguiente comando mediante terminal:
-    ```
-    django-admin startapp nombre_aplicacion
-    ```
-    - Cuando la estructura de archivos de la aplicación a construir ya ha sifo generada, ya podemos iniciar la el servidor de la aplicación, ejecutando el siguiente comando en el terminal:
-    ```
-    python manage.py runserver
-    ```
-    - Este comando inicia el servidor, el que se carga en la url http://127.0.0.1:8000.
+### Recursos de la API
 
-6. **Modificando la página de inicio**
-    - Por defecto cuando iniciamos el servidor carga una página con información de Django, pero no es lo que debiéramos ver cuando cargamos una aplicación, por lo que cambiaremos la página de inicio.
-    - Primero debemos indicarle a Django que el directorio de nuestra aplicación contiene una APP, agregamos nuestra APP a la lista INSTALLED_APPS  de Django/settings.py:
-    ```
-    INSTALLED_APPS = [
-        # apps de django
-        'mi_app',
-    ]
-    ```
+Las rutas se encuentran bajo **/api/**:
 
-    - Luego debemos importar las vistas desde nuestra app en Django/urls.py y llamar al método que renderizará esa vista:
-    ```
-    from mi_app import views
+| Recurso | Ruta |
+| --- | --- |
+| Regiones | /api/regiones/ |
+| Comunas | /api/comunas/ |
+| Perfiles | /api/perfiles/ |
+| Organizaciones | /api/organizaciones/ |
+| Categorías | /api/categorias/ |
+| Estados | /api/estados/ |
+| Voluntarios | /api/voluntarios/ |
+| Coordinadores | /api/coordinadores/ |
+| Actividades | /api/actividades/ |
+| Inscripciones | /api/inscripciones/ |
+| Recursos | /api/recursos/ |
+| Asignaciones | /api/asignaciones/ |
+| Historial de estados | /api/historial/ |
 
-    urlpatterns = [
-        path('admin/', admin.site.urls),
-        path('', views.bienvenida, name='bienvenida'),
-    ]
-    ```
+Los ModelViewSet proporcionan operaciones CRUD: GET (lista/detalle), POST (creación), PUT/PATCH (actualización) y DELETE (eliminación), sujetas a los datos y configuraciones disponibles. **No se ha realizado una prueba de integración de todos estos endpoints con MySQL**.
 
-    - En el archivo mi_app/views,py generamos el método que renderizará la vista:
-    ```
-    def bienvenida(request):
-        return render(request, 'bienvenida.html')
-    ```
+## Archivos importantes
 
-    - Finalmente, en nuestra app creamos un directorio templates, donde pondremos nuestras vistas.
-    - Dentro de mi_app/templates creamos la vista HTML que será renderizada por el método creado anteriormente.
-    - Cuando iniciemos nuevamente nuestro servidor, debiera cargar la vista recién creada en lugar de la vista Django por defecto.
+- **manage.py:** comandos de administración de Django.
+- **drf/settings.py:** aplicaciones, configuración, variables de entorno y base de datos.
+- **drf/urls.py:** rutas principales de la aplicación.
+- **mi_app/models.py:** estructura de las 13 entidades.
+- **mi_app/serializer.py:** serializadores de la API.
+- **mi_app/views.py:** vistas y ModelViewSet.
+- **mi_app/urls.py:** registro del router REST.
+- **mi_app/migrations/0001_initial.py:** migración inicial de los 13 modelos.
+- **sql.sql:** creación de la base de datos, usuario y permisos de MySQL.
+- **.env:** plantilla pública exigida para la evaluación, sin secretos reales.
+- **.env.example:** copia de la plantilla para facilitar la configuración.
+- **.gitignore:** excluye entornos virtuales, archivos temporales y configuraciones privadas.
+
+## Requisitos
+
+- Python compatible con Django 5.2 (por ejemplo, Python 3.11).
+- Paquetes en **requirements.txt** (incluye django, djangorestframework, python-decouple y mysqlclient).
+- Para MySQL: servidor MySQL 8.0.11+ o MariaDB 10.5+; algunas instalaciones antiguas de XAMPP incluyen MariaDB 10.4, incompatible con Django 5.2.
+- Una cuenta administradora de MySQL para ejecutar **sql.sql**.
+
+## Instalación en Windows (PowerShell)
+
+En la carpeta raíz donde está **manage.py**:
+
+~~~powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+~~~
+
+### 1. Crear base de datos y usuario
+
+Abra **sql.sql** y reemplace **CAMBIAR_CLAVE_MYSQL_EN_EQUIPO** por una contraseña fuerte **en una copia local que NO subirá a GitHub**. Ejecute las sentencias desde phpMyAdmin (SQL) o el cliente MySQL con permisos de administración.
+
+El script crea la base **voluntariados**, el usuario **vol_app@localhost** y asigna permisos para operar y aplicar migraciones. No crea manualmente las tablas de los modelos: Django lo hace con **migrate**.
+
+Si MySQL ya tiene creado ese usuario con otra clave, configure la contraseña con ALTER USER en una sesión privada. Compruebe la versión del servidor con SELECT VERSION();.
+
+### 2. Configurar las variables locales sin publicar secretos
+
+La pauta exige publicar **.env**, por lo que ese archivo contiene solo valores de ejemplo. Para ejecutar Django, sobrescriba los valores en la terminal (python-decouple prioriza las variables del sistema sobre las de .env).
+
+~~~powershell
+$env:SECRET_KEY = python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+$env:DB_PASSWORD = "TU_CONTRASENA_LOCAL_DE_MYSQL"
+$env:DB_ENGINE = "mysql"
+$env:DEBUG = "True"
+~~~
+
+La contraseña indicada debe ser exactamente la que asignó al usuario en MySQL. Las variables de PowerShell duran la sesión de esa terminal.
+
+**Nunca publique su contraseña real ni una SECRET_KEY válida en este repositorio.** Una clave anterior publicada debe considerarse comprometida, aunque se reemplace: el historial de Git puede conservarla.
+
+### 3. Verificar base de datos y migraciones
+
+~~~powershell
+python manage.py check
+python manage.py showmigrations
+python manage.py migrate
+python manage.py runserver
+~~~
+
+Visite http://127.0.0.1:8000/ y http://127.0.0.1:8000/api/. Para probar recursos concretos, consulte por ejemplo http://127.0.0.1:8000/api/regiones/.
+
+En la terminal puede ejecutar también **python manage.py test**. Actualmente no se aporta aquí evidencia de pruebas de integración completas sobre un servidor MySQL.
+
+### Alternativa de desarrollo con SQLite
+
+El código conserva SQLite como alternativa para trabajar sin MySQL. Antes de ejecutar Django, establezca:
+
+~~~powershell
+$env:DB_ENGINE = "sqlite"
+python manage.py migrate
+python manage.py runserver
+~~~
+
+Esta opción sirve para pruebas locales; **no equivale a verificar MySQL**.
+
+## Observaciones y límites
+
+- **sql.sql** prepara la base, el usuario y los permisos; las tablas se generan con las migraciones existentes.
+- El código incluye ViewSets CRUD, pero su disponibilidad efectiva requiere servidor y base de datos operativos.
+- El proyecto no está configurado como aplicación de producción: antes de publicarlo en Internet se deben gestionar DEBUG=False, ALLOWED_HOSTS, SECRET_KEY privada, autorización de API y otras medidas de seguridad.
+- El cambio de SQLite a MySQL configura el motor, pero **no copia automáticamente datos preexistentes** de un archivo SQLite.
+- La carpeta **incidencias** existe, pero los 13 modelos del proyecto actual están en **mi_app**, no en incidencias.
+
+## Entrega solicitada
+
+Entregar la URL pública de este repositorio. En su raíz figuran **sql.sql**, **.env** (plantilla pública) y **.gitignore** modificado; los cambios de base de datos pueden reproducirse mediante el SQL y las migraciones de Django.

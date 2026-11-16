@@ -148,7 +148,12 @@ activemq-data/
 *.sage.py
 
 # Environments
-.env
+# .env se incluye por exigencia académica SOLO con valores de ejemplo.
+# .env
+.env.local
+.env.private
+.env.production
+.env.*.local
 .envrc
 .venv
 env/

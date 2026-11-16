@@ -1,37 +1,26 @@
--- ============================================================
--- Script SQL - Plataforma de Voluntariados y Actividades Comunitarias
--- Sistema: IEI_N4_C3
--- Motor: SQLite (desarrollo) / MySQL o PostgreSQL (produccion)
--- ============================================================
+-- Plataforma de Voluntariados y Actividades Comunitarias (IEI_N4_C3)
+-- MySQL 8.0.11+ / MariaDB 10.5+ compatible con Django 5.2.
+-- Ejecutar con una cuenta administradora, por ejemplo desde phpMyAdmin.
+--
+-- IMPORTANTE: cambie la clave de ejemplo ANTES de ejecutar este script
+-- en su equipo. NO publique su contraseña real en GitHub.
+-- La creación de las tablas de los 13 modelos corresponde al ORM de Django:
+--     python manage.py migrate
 
--- Para SQLite: la base de datos se genera automaticamente con:
---   python manage.py migrate
+CREATE DATABASE IF NOT EXISTS voluntariados
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 
--- Para MySQL (produccion):
--- CREATE DATABASE voluntariados CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
--- CREATE USER 'vol_user'@'localhost' IDENTIFIED BY 'password123';
--- GRANT ALL PRIVILEGES ON voluntariados.* TO 'vol_user'@'localhost';
--- FLUSH PRIVILEGES;
+CREATE USER IF NOT EXISTS 'vol_app'@'localhost'
+    IDENTIFIED BY 'CAMBIAR_CLAVE_MYSQL_EN_EQUIPO';
 
--- Para PostgreSQL (produccion):
--- CREATE DATABASE voluntariados;
--- CREATE USER vol_user WITH PASSWORD 'password123';
--- GRANT ALL PRIVILEGES ON DATABASE voluntariados TO vol_user;
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP, INDEX, REFERENCES
+    ON voluntariados.*
+    TO 'vol_app'@'localhost';
 
--- ============================================================
--- Tablas del sistema (generadas por Django ORM / migraciones)
--- ============================================================
--- region            : Regiones geograficas
--- comuna            : Comunas por region
--- perfil            : Perfiles de acceso al sistema
--- organizacion      : Organizaciones sociales
--- categoria         : Categorias de actividades
--- estado            : Estados posibles de actividades
--- voluntario        : Personas voluntarias registradas
--- coordinador       : Coordinadores de actividades
--- actividad         : Actividades comunitarias
--- inscripcion       : Inscripciones de voluntarios
--- recurso           : Recursos disponibles
--- asignacion_recurso: Recursos asignados a actividades
--- historial_estado  : Auditoria de cambios de estado
--- ============================================================
+SHOW GRANTS FOR 'vol_app'@'localhost';
+
+-- Si el usuario ya existe, CREATE USER IF NOT EXISTS no cambia su clave.
+-- En ese caso, use ALTER USER por separado, con una contraseña PRIVADA:
+-- ALTER USER 'vol_app'@'localhost' IDENTIFIED BY 'SU_CLAVE_LOCAL';
+-- No suba a GitHub una versión con credenciales reales.
