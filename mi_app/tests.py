@@ -12,7 +12,7 @@ class InterfazGestionTests(SimpleTestCase):
     def test_panel_voluntarios(self):
         respuesta = self.client.get(reverse("gestion", args=["voluntarios"]))
         self.assertEqual(respuesta.status_code, 200)
-        self.assertContains(respuesta, "Gestión de registros")
+        self.assertContains(respuesta, "GESTIÓN DE REGISTROS")
         self.assertContains(respuesta, 'data-resource="voluntarios"')
 
     def test_los_trece_modulos_tienen_panel(self):

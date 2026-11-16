@@ -163,7 +163,7 @@
           dateBox.append(elt("strong", "", Number.isNaN(date.getTime()) ? "—" : date.getDate()), elt("small", "", Number.isNaN(date.getTime()) ? "S/F" : new Intl.DateTimeFormat("es-CL",{month:"short"}).format(date)));
           const info = elt("div", "activity-meta");
           info.append(elt("strong", "", item.nombre || "Actividad sin nombre"), elt("span", "", readableDate(item.fecha_inicio, true) + " · " + (item.cupo_maximo ?? 0) + " cupos"));
-          row.append(dateBox, info, elt("span", "activity-badge", "Planificada"));
+          row.append(dateBox, info, elt("span", "activity-badge", "Registrada"));
           activitiesBox.append(row);
         });
       }
