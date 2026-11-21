@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block content %}
+<a class="back" href="{{ list_url }}">Volver a {{ titulo|lower }}</a><section class="page-heading"><div><p class="eyebrow">{{ titulo }}</p><h1>{{ etiqueta }}</h1><p class="muted">Información del registro y opciones disponibles.</p></div><div class="actions">{% if puede_editar %}<a class="button" href="{{ edit_url }}">Editar</a>{% endif %}{% if puede_eliminar %}<a class="button danger-outline" href="{{ delete_url }}">Eliminar</a>{% endif %}</div></section>
+<section class="panel details"><dl>{% for label, value in campos %}<div><dt>{{ label|capfirst }}</dt><dd>{{ value|linebreaksbr }}</dd></div>{% endfor %}</dl></section>
+{% endblock %}

@@ -1,0 +1,3 @@
+{% extends 'base.html' %}{% block content %}
+<a class="back" href="{{ detail_url }}">Volver al detalle</a><section class="page-heading"><div><p class="eyebrow">{{ titulo }}</p><h1>Confirmar eliminación</h1></div></section><section class="panel delete-panel"><h2>¿Eliminar «{{ etiqueta }}»?</h2><p>Esta acción elimina el registro. Si tiene dependencias o debe conservarse como historial, el sistema impedirá el borrado.</p><form method="post">{% csrf_token %}{{ form.non_field_errors }}<div class="form-actions"><button class="button danger" type="submit">Sí, eliminar registro</button><a class="button secondary" href="{{ detail_url }}">Cancelar</a></div></form></section>
+{% endblock %}

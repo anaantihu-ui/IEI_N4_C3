@@ -5,6 +5,17 @@ voluntarios, coordinadores, inscripciones, asistencia, recursos e incidencias.
 Desarrollado con Django y Django REST Framework, mediante ModelViewSet y Router.
 Incluye historial de cambios, permisos por organización, filtros e indicadores.
 
+## Evaluación 3: interfaz web
+
+La plataforma ahora incluye formularios HTML y CRUD mediante ListView, DetailView,
+CreateView, UpdateView y DeleteView para las diez entidades operativas.
+
+- Web: `http://127.0.0.1:8000/web/ingresar/`.
+- API REST: `http://127.0.0.1:8000/api/`.
+- La raíz `/` abre las actividades web. La web usa la misma base y reglas que la API.
+- Consulta [la guía de Evaluación 3](docs/EVALUACION_3.md) para archivos, rutas,
+  permisos, demostración y pruebas.
+
 ## Obtener esta implementación
 
 ```powershell
@@ -39,7 +50,7 @@ python manage.py runserver --insecure
 ```
 
 Abre http://127.0.0.1:8000/api-auth/login/ e ingresa con tu superusuario. Después
-abre http://127.0.0.1:8000/api/. No se requieren formularios HTML propios.
+abre http://127.0.0.1:8000/api/. Para la Evaluación 2 basta la API; la Evaluación 3 agrega formularios propios bajo /web/.
 `--insecure` sirve los estilos de DRF/admin con DEBUG=False únicamente en esta
 demostración local; no es un comando de despliegue.
 
