@@ -131,3 +131,21 @@ según la guía de instalación. La base de pruebas es test_voluntariados.
 
 La implementación cubre la lista de requisitos entregada en esta conversación.
 No se ha recibido la rúbrica completa de la Evaluación 3 para certificar otros criterios.
+
+## Lanzador para Windows
+
+`scripts/actualizar_y_abrir.cmd` actualiza exclusivamente el repositorio
+anaantihu-ui/IEI_N4_C3 a implementacion/voluntariados. Rechaza otras carpetas,
+cambios locales y actualizaciones que no sean fast-forward. No hace reset ni stash.
+Si lo descargas por separado, guarda actualizar_y_abrir.cmd junto a manage.py
+y haz doble clic. Tambien funciona desde scripts/ en una copia actualizada.
+
+Instala los requirements en .venv, comprueba la conexion configurada, aplica
+migraciones y abre /web/ingresar/ en un puerto libre entre 8001 y 8010. No detiene
+el servidor anterior del puerto 8000. Los errores permanecen en la ventana para
+poder enviar una captura. No cambia contrasenas ni crea cuentas automaticamente.
+
+El codigo auxiliar scripts/abrir_web_local.py se comprobo con compilacion Python;
+la ruta de login respondio HTTP 200 con el cliente Django en el entorno aislado.
+El archivo .cmd no se ejecuto en Windows: se necesita verificarlo en el equipo del
+usuario. La instalacion local no se considera completada hasta observar su resultado.
