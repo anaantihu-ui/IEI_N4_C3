@@ -10,12 +10,17 @@ Incluye historial de cambios, permisos por organización, filtros e indicadores.
 ```powershell
 git clone --branch implementacion/voluntariados https://github.com/anaantihu-ui/IEI_N4_C3.git
 cd IEI_N4_C3
-py -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
 ```
 
-Requisitos: Python 3.11 o 3.12 y MySQL 8.0. En Ubuntu, antes de instalar las
+Requisitos: Python 3.11 o 3.12 y MariaDB 10.4.32 (también MySQL 8.0).
+Esta entrega local utiliza Django 4.2.30, compatible con MariaDB 10.4.
+Django 5.2 requiere MariaDB 10.5 o superior. Django 4.2 terminó su soporte
+el 7 de abril de 2026: para desplegar en producción, actualizar primero
+el servidor de base de datos y volver a una versión mantenida de Django.
+Ver [guía Windows y phpMyAdmin](docs/INSTALACION_WINDOWS.md). En Ubuntu, antes de instalar las
 librerías Python: `sudo apt install python3-venv python3-dev default-libmysqlclient-dev build-essential pkg-config`.
 
 ## Base de datos y entorno
@@ -30,11 +35,13 @@ librerías Python: `sudo apt install python3-venv python3-dev default-libmysqlcl
 ```powershell
 python manage.py migrate
 python manage.py createsuperuser
-python manage.py runserver
+python manage.py runserver --insecure
 ```
 
 Abre http://127.0.0.1:8000/api-auth/login/ e ingresa con tu superusuario. Después
 abre http://127.0.0.1:8000/api/. No se requieren formularios HTML propios.
+`--insecure` sirve los estilos de DRF/admin con DEBUG=False únicamente en esta
+demostración local; no es un comando de despliegue.
 
 La consigna exige incluir `.env`. Para datos privados, copia `.env.example` a
 `.env.local` y el SQL a `crear_base_datos_local.sql`; cambia las contraseñas en
@@ -48,9 +55,11 @@ python -c "from django.core.management.utils import get_random_secret_key; print
 prioridad; si existe `.env.local`, reemplaza la lectura de `.env`. Una copia local
 antigua puede apuntar a otra base: revísala al actualizar el proyecto.
 
-El SQL restablece la clave de los usuarios de demostración si se ejecuta otra vez.
-Las tablas y datos de la antigua biblioteca no se usan: esta implementación utiliza
-una base nueva. No hay cambio automático a SQLite si falla MySQL.
+El SQL conserva la contraseña de un usuario ya existente. Si la conexión falla,
+comprueba su contraseña localmente; no vuelve a poner una contraseña pública.
+Solo concede permisos sobre `voluntariados` y no toca `incidencias`. Además,
+settings.py rechaza un DB_NAME distinto de voluntariados y un DB_TEST_NAME
+distinto de test_voluntariados. No hay cambio automático a SQLite si falla MySQL.
 
 ## Datos para practicar
 
@@ -167,6 +176,35 @@ Remove-Item Env:DB_ENGINE
 
 Las pruebas concurrentes requieren MySQL porque SQLite no ofrece los mismos
 bloqueos de filas. Consulta los resultados reales en [docs/VERIFICACION.md](docs/VERIFICACION.md).
+
+## Para qué sirve cada archivo
+
+| Archivo | Función |
+|---|---|
+| `manage.py` | Ejecuta los comandos Django: migrate, test, createsuperuser y runserver. |
+| `requirements.txt` | Fija las dependencias de esta entrega compatible con MariaDB 10.4. |
+| `.env` / `.env.example` | Valores públicos ficticios exigidos por la evaluación. |
+| `.env.local` | Configuración privada de tu computador; no se entrega por Git. |
+| `.gitignore` | Excluye claves privadas, entorno virtual y bases SQLite locales. |
+| `crear_base_datos.sql` | Crea voluntariados y concede permisos limitados al usuario de aplicación. |
+| `scripts/permisos_pruebas.sql` | Autoriza solo la base desechable de pruebas. |
+| `drf/settings.py` | Lee variables, configura MariaDB, apps, autenticación y paginación. |
+| `drf/urls.py` | Conecta /api/, inicio de sesión y administración. |
+| `comunidad/models.py` | Define entidades, relaciones y restricciones de la base. |
+| `comunidad/migrations/0001_initial.py` | Instrucciones versionadas que crean tablas y restricciones. |
+| `comunidad/serializers.py` | Convierte JSON y valida datos y reglas de negocio. |
+| `comunidad/access.py` | Funciones comunes de roles, visibilidad y autorización. |
+| `comunidad/views.py` | CRUD con transacciones, bloqueos, auditoría e indicadores. |
+| `comunidad/urls.py` | Router que asigna rutas a cada ViewSet. |
+| `comunidad/admin.py` | Consulta administrativa del dominio; escrituras mediante API. |
+| `comunidad/tests.py` | Pruebas CRUD, permisos, reglas, auditoría y concurrencia. |
+| `comunidad/management/commands/crear_demo.py` | Genera datos ficticios para practicar. |
+| `scripts/verificar_entrega.py` | Revisa archivos, coherencia SQL/.env y exclusiones Git. |
+| `drf/asgi.py` / `drf/wsgi.py` | Puntos de entrada del servidor para ejecutar Django. |
+| `comunidad/apps.py` / `__init__.py` | Registro de la aplicación y paquetes Python. |
+| `docs/INSTALACION_WINDOWS.md` | Pasos en phpMyAdmin, PowerShell, pruebas y capturas. |
+| `docs/VERIFICACION.md` | Resultados comprobados y limitaciones de esta revisión. |
+| `GUIA_DEFENSA.md` | Cinco preguntas y respuestas para la defensa individual. |
 
 ## Archivos para la evaluación
 

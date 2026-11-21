@@ -161,6 +161,9 @@ class ActividadSerializer(OrganizacionScopedSerializer):
                 fixed(self, attrs, ['inicio', 'fin'])
             if value(self, attrs, 'cupos') < self.instance.inscripciones.filter(estado='confirmada').count():
                 raise serializers.ValidationError({'cupos': 'No puede ser menor al número de inscritos confirmados.'})
+        if state == 'publicada' and (not self.instance or self.instance.estado != state or 'inicio' in attrs):
+            if start <= timezone.now():
+                raise serializers.ValidationError({'inicio': 'No puedes publicar o reprogramar una actividad en el pasado.'})
         if state == 'en_curso' and start > timezone.now():
             raise serializers.ValidationError({'estado': 'La actividad aún no comienza.'})
         if state == 'finalizada' and end > timezone.now():

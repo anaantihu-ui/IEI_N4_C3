@@ -1,0 +1,20 @@
+2026-11-20 21:07:46 0 [Warning] failed to retrieve the MAC address
+2026-11-20 21:07:46 0 [Warning] Could not increase number of max_open_files to more than 16384 (request: 32191)
+Superuser created successfully.
+Datos demo preparados. Cuentas: coordinador_demo y voluntario_demo.
+Actividad: /api/actividades/1/. Las cuentas existentes conservan su contraseña.
+Datos demo preparados. Cuentas: coordinador_demo y voluntario_demo.
+Actividad: /api/actividades/1/. Las cuentas existentes conservan su contraseña.
+POST /api/categorias/ 201
+GET /api/categorias/ 200
+GET /api/categorias/2/ 200
+PUT /api/categorias/2/ 200
+PATCH /api/categorias/2/ 200
+DELETE /api/categorias/2/ 204
+GET /api/categorias/2/ 404
+GET /api/actividades/ 200
+POST /api/inscripciones/ 201
+PATCH /api/inscripciones/1/ 200
+GET /api/actividades/indicadores/ 200
+GET /api/auditoria/ 200
+GET /api/auditoria/ 403

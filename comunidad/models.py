@@ -35,7 +35,7 @@ class Perfil(Registro):
     habilidades = models.TextField(blank=True)
 
     class Meta(Registro.Meta):
-        constraints = [models.CheckConstraint(condition=~Q(rol='coordinador') | Q(organizacion__isnull=False), name='coordinador_con_organizacion')]
+        constraints = [models.CheckConstraint(check=~Q(rol='coordinador') | Q(organizacion__isnull=False), name='coordinador_con_organizacion')]
 
     def __str__(self):
         return self.usuario.username
@@ -81,8 +81,8 @@ class Actividad(Registro):
 
     class Meta(Registro.Meta):
         constraints = [
-            models.CheckConstraint(condition=Q(fin__gt=F('inicio')), name='actividad_fechas_validas'),
-            models.CheckConstraint(condition=Q(cupos__gte=1), name='actividad_cupos_positivos'),
+            models.CheckConstraint(check=Q(fin__gt=F('inicio')), name='actividad_fechas_validas'),
+            models.CheckConstraint(check=Q(cupos__gte=1), name='actividad_cupos_positivos'),
         ]
         indexes = [models.Index(fields=['organizacion', 'estado', 'inicio'])]
 
@@ -110,7 +110,7 @@ class Asistencia(Registro):
     observaciones = models.TextField(blank=True)
 
     class Meta(Registro.Meta):
-        constraints = [models.CheckConstraint(condition=Q(horas__gte=0), name='asistencia_horas_no_negativas')]
+        constraints = [models.CheckConstraint(check=Q(horas__gte=0), name='asistencia_horas_no_negativas')]
 
 
 class Recurso(Registro):
@@ -120,7 +120,7 @@ class Recurso(Registro):
     descripcion = models.TextField(blank=True)
 
     class Meta(Registro.Meta):
-        constraints = [models.CheckConstraint(condition=Q(cantidad_total__gte=1), name='recurso_cantidad_positiva')]
+        constraints = [models.CheckConstraint(check=Q(cantidad_total__gte=1), name='recurso_cantidad_positiva')]
 
 
 class AsignacionRecurso(Registro):
@@ -132,7 +132,7 @@ class AsignacionRecurso(Registro):
     class Meta(Registro.Meta):
         constraints = [
             models.UniqueConstraint(fields=['actividad', 'recurso'], name='asignacion_unica'),
-            models.CheckConstraint(condition=Q(cantidad__gte=1), name='asignacion_cantidad_positiva'),
+            models.CheckConstraint(check=Q(cantidad__gte=1), name='asignacion_cantidad_positiva'),
         ]
 
 

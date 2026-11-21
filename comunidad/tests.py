@@ -158,6 +158,21 @@ class PlatformTests(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(self.client.patch(f'/api/actividades/{self.activity.pk}/', {'inicio': (self.start+timedelta(hours=1)).isoformat()}, format='json').status_code, 400)
 
+    def test_cannot_publish_or_reschedule_in_the_past(self):
+        self.activity.estado = 'borrador'
+        self.activity.inicio = timezone.now() - timedelta(hours=2)
+        self.activity.fin = timezone.now() - timedelta(hours=1)
+        self.activity.save()
+        url = f'/api/actividades/{self.activity.pk}/'
+        response = self.client.patch(url, {'estado': 'publicada'}, format='json')
+        self.assertEqual(response.status_code, 400, response.data)
+        self.activity.estado = 'publicada'
+        self.activity.inicio = self.start
+        self.activity.fin = self.end
+        self.activity.save()
+        response = self.client.patch(url, {'inicio': (timezone.now() - timedelta(hours=1)).isoformat()}, format='json')
+        self.assertEqual(response.status_code, 400, response.data)
+
     def test_invalid_state_transition_rejected(self):
         url = f'/api/actividades/{self.activity.pk}/'
         self.assertEqual(self.client.patch(url, {'estado': 'finalizada'}, format='json').status_code, 400)

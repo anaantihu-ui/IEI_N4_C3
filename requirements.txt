@@ -1,6 +1,6 @@
-# Dependencias de la API de voluntariados y conexion MySQL
+# Entrega LOCAL con MariaDB 10.4.32 (Django 4.2 sin soporte desde abril 2026).
 asgiref==3.12.1
-Django==5.2.17
+Django==4.2.30
 sqlparse==0.6.0
 tzdata==2026.3
 python-decouple==3.8

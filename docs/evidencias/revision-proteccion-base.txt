@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "/workspace/scratch/bae5e2a462fd/IEI_N4_C3/drf/settings.py", line 75, in <module>
+    raise ImproperlyConfigured('DB_NAME debe ser voluntariados; no se permiten otras bases.')
+django.core.exceptions.ImproperlyConfigured: DB_NAME debe ser voluntariados; no se permiten otras bases.

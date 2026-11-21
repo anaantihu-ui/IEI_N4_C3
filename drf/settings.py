@@ -6,6 +6,7 @@ esa copia, que está excluida de Git; las variables del sistema tienen prioridad
 """
 
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 from decouple import Config, RepositoryEnv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,6 +70,11 @@ WSGI_APPLICATION = 'drf.wsgi.application'
 # mysql: objetivo de la entrega. sqlite: alternativa aislada para las pruebas.
 DB_ENGINE = config('DB_ENGINE', default='mysql').strip().lower()
 if DB_ENGINE == 'mysql':
+    # Esta entrega solo puede operar sobre su base; evita usar incidencias por error.
+    if config('DB_NAME', default='voluntariados') != 'voluntariados':
+        raise ImproperlyConfigured('DB_NAME debe ser voluntariados; no se permiten otras bases.')
+    if config('DB_TEST_NAME', default='test_voluntariados') != 'test_voluntariados':
+        raise ImproperlyConfigured('DB_TEST_NAME debe ser test_voluntariados.')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -77,7 +83,10 @@ if DB_ENGINE == 'mysql':
             'PASSWORD': config('DB_PASSWORD'),
             'HOST': config('DB_HOST', default='127.0.0.1'),
             'PORT': config('DB_PORT', default=3306, cast=int),
-            'OPTIONS': {'charset': 'utf8mb4'},
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES', default_storage_engine='InnoDB'",
+            },
             'TEST': {'NAME': config('DB_TEST_NAME', default='test_voluntariados')},
         }
     }
